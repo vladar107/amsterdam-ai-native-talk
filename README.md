@@ -3,6 +3,16 @@
 Deck for the AI Native Amsterdam meetup talk on 25 November 2026 (35–40 minutes plus questions).
 Speaker: Vladislav Ramazaev.
 
+## Links
+
+| | |
+| --- | --- |
+| Slides (PDF) | `exports/deck.pdf` in this repository, attached to the release after the talk |
+| Claudescope, the transcript viewer used in the demo | <https://github.com/vladar107/claudescope> |
+| recall-bench, the retrieval comparison behind the one chart | <https://github.com/vladar107/recall-bench> |
+| Sources for every claim on a slide | [`sources.md`](sources.md) |
+| Speaker | <https://www.linkedin.com/in/vladar107> · <https://linktr.ee/vladar107> |
+
 The deck is plain Markdown rendered with [Deckrun](https://github.com/arpitbbhayani/deckrun),
 pinned as a dev dependency so the presentation does not depend on whatever `npx deckrun` resolves to on the day.
 
@@ -31,7 +41,7 @@ npm run qr         # regenerates the QR codes for the closing slide (assets/qr/)
 ```
 
 Theme, template and transition are set in `package.json` scripts and can be overridden for exports with
-`THEME=daylight npm run export`. Theme decision (2026-09-08): `paper`, with the `minimal` template and `fade` transition.
+`THEME=daylight npm run export`. Theme decision (2026-09-08): `paper`, `minimal` template, `fade` transition, type size `l` for the room.
 
 ## Authoring rules that bite
 
@@ -48,7 +58,8 @@ Theme, template and transition are set in `package.json` scripts and can be over
 - Present from the browser with `npm run present`; keep Terminal, Claude Code and Claudescope in separate windows.
 - Export a fresh `exports/deck.pdf` after every stable revision; it is the strongest offline fallback.
   The standalone HTML export still loads fonts, highlighting, KaTeX and Mermaid from CDNs.
-- The slide after the live demo is a fallback with a recorded answer; skip it when the demo works.
+- The recorded-answer fallback is the last slide, reached with `End`. Return with `O` (overview) and a click.
+  Claudescope is shown live in its own browser window; the screenshot on the slide is the fallback.
 - Deckrun's pixel pets are hidden by a `<style>` block on the title slide, which also adds a small fixed footer.
 - The reconstruction slide embeds the local Claudescope UI in an iframe (`http://127.0.0.1:4317/sessions/<id>`), so
   `claudescope start` must be running before the deck opens. The screenshot in `assets/screenshots/` is the fallback.

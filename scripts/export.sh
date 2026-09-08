@@ -9,7 +9,7 @@ OUT="${2:-exports/deck}"
 THEME="${THEME:-paper}"
 TEMPLATE="${TEMPLATE:-minimal}"
 TRANSITION="${TRANSITION:-fade}"
-SIZE="${SIZE:-m}"
+SIZE="${SIZE:-l}"
 PORT="${PORT:-7899}"
 BASE="http://127.0.0.1:${PORT}"
 

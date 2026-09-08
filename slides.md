@@ -7,15 +7,11 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 <style>
   .pet { display: none !important; }
   .talk-footer { position: fixed; right: 2.2rem; bottom: 2.6rem; z-index: 40; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.7rem; letter-spacing: 0.04em; opacity: 0.55; pointer-events: none; }
-  .print-only { display: none; }
-  @media print {
-    .talk-footer, .screen-only { display: none !important; }
-    .print-only { display: block !important; }
-  }
+  @media print { .talk-footer { display: none !important; } }
 </style>
-<div class="talk-footer">vladar107 · claudescope</div>
+<div class="talk-footer">vladar107</div>
 
-<!-- notes: [0:30 · Part 1 starts] No agenda, no bio. One sentence: "I want to start with a question to my coding agent about work I did months ago." Then switch straight to the terminal. -->
+<!-- notes: [0:30 · running 0:30] No agenda, no bio. One sentence: "I want to start by asking my coding agent about work I did months ago." Then switch to the terminal. -->
 
 ---
 
@@ -23,19 +19,11 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
 > Why did we choose DuckDB for this project, what alternatives did we consider, and where was this discussed?
 
-*Nothing about this is in the current conversation, in `CLAUDE.md`, or in the README.*
+*Not in this conversation. Not in `CLAUDE.md`. Not in the README.*
 
 **→ Claude Code, live**
 
-<!-- notes: [2:00] LIVE DEMO. Switch to the prepared Claude Code window, paste the exact rehearsed prompt. While it runs: "It is a fresh session. The project files do not contain the answer." The agent should return: the decision, the alternatives, the session id and the date. PLACEHOLDER: the DuckDB question is from the brief; replace it with the decision chosen in notes/demo-decision.md. -->
-
----
-
-## If the demo misbehaves
-
-![Recorded answer with session id and date](assets/screenshots/demo-answer.png)
-
-<!-- notes: [FALLBACK · skip when live works] Screenshot of the rehearsed run. Read the answer aloud, point at the session id and the date. Say that this was recorded yesterday with the same prompt. -->
+<!-- notes: [2:30 · running 3:00] LIVE DEMO. Switch to the prepared Claude Code window, paste the exact rehearsed prompt. While it runs: "Fresh session. The project files do not contain the answer." Expected answer: the decision, the alternatives, the session id, the date. If the demo fails: press End for the recorded answer (last slide), then O and click slide 3 to come back. PLACEHOLDER: the DuckDB wording is from the brief; replace with the recorded decision from notes/demo-decision.md. -->
 
 ---
 
@@ -43,212 +31,162 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
 | What we saw | Where it lives |
 | --- | --- |
-| The decision and the alternatives | A session from **July 2026** |
+| The decision and the alternatives | A session file from months earlier |
 | The date and the session id | The file name and one record inside it |
-| Nothing in the current context | Until the agent went and searched |
+| Nothing of this in the current context | Until the agent went and searched |
 
-**Historical availability is not the same as memory.**
+**Having the history is not the same as remembering it.**
 
-<!-- notes: [1:30 · end of Part 1 at ~4:00] The whole talk is this distinction. The agent did not "remember"; it had a tool that could search its own past and it used it. For the next 15 minutes: what is actually in that file. -->
-
----
-
-# Part 2 · Inside a coding-agent session
-
-<!-- notes: [0:15] Section marker. "Claude Code is the main example. Codex and Pi appear where they do something different." -->
+<!-- notes: [1:30 · running 4:30] The whole talk is this distinction. The agent did not remember; it had a tool that could search its own past and used it. Next: what is actually in that file. -->
 
 ---
 
-## Where did this come from? The raw record
+## The raw record
 
-`~/.claude/projects/<project>/<session-id>.jsonl`
+`~/.claude/projects/<project>/<session-id>.jsonl`, one line of it:
 
 ```json
-{"type":"assistant",
- "uuid":"9f2c...","parentUuid":"4b71...",
- "sessionId":"c0ffee12-...","timestamp":"2026-07-14T09:41:03.118Z",
- "cwd":"/work/session-digest","gitBranch":"feat/storage",
- "message":{"role":"assistant","model":"claude-opus-5","content":[
-   {"type":"thinking","thinking":"","signature":"EqQBCkYIBRgC..."},
-   {"type":"text","text":"Going with DuckDB: JSONL is read in place, no ingest step."}
- ],"usage":{"input_tokens":78,"cache_read_input_tokens":41205,"output_tokens":212}}}
+{
+  "type": "assistant",
+  "parentUuid": "4b71e2a0…",
+  "timestamp": "2026-07-14T09:41:03Z",
+  "gitBranch": "feat/storage",
+  "cwd": "/work/session-digest",
+  "message": { "content": [
+    { "type": "thinking", "thinking": "", "signature": "EqQBCkYI…" },
+    { "type": "text", "text": "Going with DuckDB: JSONL is read in place, no ingest step…" }
+  ]}
+}
 ```
 
-- **`parentUuid`** links records into a tree, not a list
-- **`thinking` is empty**; only the `signature` survives on disk
-- The decision lives in `text`, next to its **date, branch, and working directory**
+- **`parentUuid`**: records form a tree, not a list
+- **`timestamp`, `gitBranch`, `cwd`**: the decision carries its own provenance
+- **`thinking` is empty**; only the `signature` is on disk
 
-<!-- notes: [2:00] One record, three fields. Do not read the JSON. "Every line in this file is one JSON object like this. This one is the assistant's answer. Notice what is next to it: when, where, on which branch, and how many tokens it cost." Fixture: demo/fixtures/claude-code/session.jsonl -->
+<!-- notes: [2:00 · running 6:30] Show the unreadable full line in the terminal first (cat | head -c 2000), then this slide does the explaining. Fields not on the slide (sessionId, uuid, usage, model, version) are on every record too; mention them only if asked. -->
 
 ---
 
 ## The same session, reconstructed
 
-<iframe class="screen-only" src="http://127.0.0.1:4317/sessions/c0ffee12-0000-4000-8000-000000000000" title="Claudescope: the demo session reconstructed into turns"></iframe>
-<img class="print-only" src="assets/screenshots/claudescope-session.png" alt="Claudescope: the demo session reconstructed into turns">
+![The demo session in Claudescope, grouped into turns](assets/screenshots/claudescope-session.png "right")
 
-<!-- notes: [1:30] LIVE: the iframe shows the local Claudescope view of the demo session (start it with `claudescope start` before the talk; PLACEHOLDER session id, replace with the real one). Scroll to the decision turn, then to the compaction boundary. If the frame is blank, open assets/screenshots/claudescope-session.png. Instrument, not subject: "This is a viewer I built to read these files. The point is not the tool; the point is that the file was readable all along, just not by humans." -->
+- Records grouped into **turns**
+- Tool calls paired with their **results**
+- The **compaction boundary** made visible
+- Search across every session on the machine
 
----
-
-## Four layers, four lifetimes
-
-| Layer | What it is | Automatically there next time? |
-| --- | --- | --- |
-| **Current context** | The messages the model sees right now | Yes |
-| **Compacted context** | A lossy summary of earlier work | Yes |
-| **Stored session** | The durable JSONL execution record | Only when resumed or searched |
-| **Persistent memory** | Selected instructions and conclusions | Loaded into future sessions |
-
-<!-- notes: [1:30] The map for the rest of the talk. The demo answer came from layer 3. Most "give the agent memory" work targets layer 4. Part 2 is about layers 1 to 3; Part 4 comes back to layer 4. -->
+<!-- notes: [2:00 · running 8:30] LIVE: switch to the Claudescope browser window already open on this session (http://127.0.0.1:4317/sessions/<id>). Scroll to the turn with the decision. The slide is the fallback. Instrument, not subject: "a viewer I built to read these files; the point is that the file was readable all along, just not by humans." -->
 
 ---
 
-## Anatomy of one session file
+## What the harness keeps to rebuild a session
 
-One real session, 6,682 records:
+| Needed to rebuild | Where it is on disk |
+| --- | --- |
+| Messages and tool calls | `user` and `assistant` records; a tool result is a `user` record pointing at the call |
+| Provenance | `timestamp`, `cwd`, `gitBranch`, `sessionId` on every record |
+| Large tool output | Spilled to `<session-id>/tool-results/*.txt`; the model saw a 2 KB preview |
+| Harness-injected context | `attachment` records: environment, reminders, hook output |
+| Housekeeping | Titles, mode changes, PR links, file snapshots |
 
-| Record type | Count | Role |
-| --- | --- | --- |
-| `user` | 1,044 | Prompts **and** tool results |
-| `assistant` | 1,757 | Text, thinking, tool calls |
-| `attachment` | 1,796 | Harness-injected context: env, reminders, hook output |
-| `system` | 110 | Compaction boundaries, turn durations, local commands |
-| housekeeping | ~1,975 | Titles, mode changes, PR links, file-history snapshots, queue ops |
+In one real 6,682-record session, **about a third** was conversation.
 
-- Content blocks inside messages: **874 tool calls, 874 tool results, 658 thinking, 245 text**
-
-<!-- notes: [2:00] "Only about a third of this file is conversation." The rest is what the harness needs to rebuild state: what it injected, what it tracked, what happened to files. Numbers from a real Claude Code 2.1.x session, structure only. -->
+<!-- notes: [2:30 · running 11:00] One investigation: what must be preserved to reconstruct a useful session? Two surprises: tool results arrive as user messages, and the transcript is not self-contained: the 40 KB the agent read is in a sidecar file. Subagents have their own transcripts under <session-id>/subagents/; mention only if asked. -->
 
 ---
 
-## Tool calls, results, and what does not fit
+## Compaction: the record survives, the context does not
 
 ```json
-{"type":"assistant","uuid":"a1..","message":{"content":[
-  {"type":"tool_use","id":"toolu_01X","name":"Bash","input":{"command":"cat HANDOFF.md"}}]}}
-{"type":"user","uuid":"b2..","parentUuid":"a1..","sourceToolAssistantUUID":"a1..",
- "message":{"content":[{"type":"tool_result","tool_use_id":"toolu_01X",
-   "content":"<persisted-output> Output too large (40.7KB).
-              Full output saved to: <session-id>/tool-results/b84yv14jf.txt
-              Preview (first 2KB): ..."}]},
- "toolUseResult":{"stdout":"...","interrupted":false}}
+{ "type": "system", "subtype": "compact_boundary",
+  "parentUuid": null, "logicalParentUuid": "2f40…",
+  "compactMetadata": { "trigger": "auto",
+    "preTokens": 1000964, "postTokens": 17382, "durationMs": 172436 } }
+
+{ "type": "user", "isCompactSummary": true, "isVisibleInTranscriptOnly": true,
+  "message": { "content": "This session is being continued from a previous
+     conversation that ran out of context. Summary: 1. Primary Request and Intent: …" } }
 ```
 
-- A tool result is a **`user`** record pointing back at the call
-- Large outputs are **spilled to files** beside the transcript; the model sees a preview
-- `toolUseResult` keeps the structured form the harness needs, separate from what the model saw
+- **1,000,964 tokens in, 17,382 out**, in just under three minutes
+- The summary arrives as a **`user` message**; the model reads it, it did not write it for itself
+- The parent chain is cut; `logicalParentUuid` remembers where it was. **Everything before it is still on disk.**
 
-<!-- notes: [1:30] Two things people miss: tool results arrive as user messages, and the transcript is not self-contained: the 40 KB the agent read is in a sidecar file. "Reconstruction needs the directory, not just the .jsonl." -->
+<!-- notes: [2:00 · running 13:00] Real numbers from one auto-compaction (Claude Code 2.1.25x). "Nothing before this line is in the model's context anymore, except what the summary chose to keep. All of it is still in the file." -->
 
 ---
 
-## Subagents and sidechains
-
-```text
-<project>/
-├── <session-id>.jsonl
-└── <session-id>/
-    ├── tool-results/            spilled outputs
-    └── subagents/
-        ├── agent-a3de74.jsonl   a full child transcript
-        └── agent-a3de74.forked-skill.json
-```
-
-- A subagent runs its **own conversation** with its own context window
-- The parent transcript only holds the **call and the final report**
-- `isSidechain: true` marks records that never entered the main context
-
-<!-- notes: [1:30] Why it matters for memory: the reasoning that produced a subagent's conclusion is in a different file. If you only search the main transcript you will find the conclusion and not the evidence. -->
-
----
-
-## What compaction changes
-
-```json
-{"type":"system","subtype":"compact_boundary","content":"Conversation compacted",
- "parentUuid":null,"logicalParentUuid":"2f40...",
- "compactMetadata":{"trigger":"auto",
-   "preTokens":1000964,"postTokens":17382,"cumulativeDroppedTokens":983582,
-   "durationMs":172436,
-   "preservedSegment":{"headUuid":"0a1f...","anchorUuid":"02aa...","tailUuid":"2f40..."}}}
-{"type":"user","isCompactSummary":true,"isVisibleInTranscriptOnly":true,"uuid":"02aa...",
- "message":{"role":"user","content":"This session is being continued from a previous
-    conversation that ran out of context. The summary below covers the earlier portion
-    of the conversation. Summary: 1. Primary Request and Intent: ..."}}
-```
-
-- **1,000,964 tokens in → 17,382 tokens out**, in just under three minutes
-- The summary is a **`user` message** the model receives, not something the model wrote for itself
-- The **parent chain is cut** (`parentUuid: null`); `logicalParentUuid` remembers where it was
-
-<!-- notes: [2:00] Real numbers from one auto-compaction. 98% of the working context became a summary. "Everything before this line is still on disk. Nothing before this line is in the model's context anymore, except what the summary chose to keep." -->
-
----
-
-## From records on disk to the next request
+## How the next request is rebuilt
 
 ```text
 session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary ──▶ messages[] ──▶ model request
       ▲                                                                       ▲              │
-      │                              CLAUDE.md + memory + skills ─────────────┘              │
+      │                       instructions + memory + skills ─────────────────┘              │
       └────────────────────── new records appended ◀────────────────────────────────────────┘
 ```
 
-- The file is the **source of truth**; the context window is a **view** over it
-- `--resume` and `--continue` replay this view; nothing else re-reads the whole file
-- Persistent memory enters on the **left side**, every single time
+- The stored session is the **durable record** a resumed context is rebuilt from
+- Instruction and memory files enter on a **separate path**, under their own scope and loading rules
+- What the model sees is the **intersection** of the two, never the whole file
 
-<!-- notes: [1:30] Bridge to Part 4: the same records feed both "what the model sees now" and "what can be searched later". Memory files are on a separate path into the request and they are there on every turn. -->
+<!-- notes: [1:30 · running 14:30] Bridge to memory. The same records feed both "what the model sees now" and "what can be searched later". Memory enters on a separate path; the rest of the talk is about what should be allowed onto it. The exact replay rules are inferred from the records, not from documentation: say "roughly" and move on. -->
 
 ---
 
 ## Codex and Pi, where they differ
 
-| | Claude Code | Codex CLI | Pi |
+| Question | Claude Code | Codex CLI | Pi |
 | --- | --- | --- | --- |
-| **Record shape** | Flat records, `parentUuid` tree | Envelopes: `session_meta`, `turn_context`, `response_item`, `event_msg` | Header + threaded `id`/`parentId` records |
-| **One turn is** | One `assistant` record per content block | A `message`, `reasoning`, `function_call`, `function_call_output` sequence | `message` records with role `user`, `assistant`, `toolResult` |
-| **Reasoning on disk** | `thinking: ""` + `signature` | `summary: []` + `encrypted_content` | plaintext `thinking` + signature *(verify)* |
-| **Compaction** | `compact_boundary` + summary `user` message | `compacted` with `replacement_history` and window ids | *(verify)* |
-| **Sidecars** | `tool-results/`, `subagents/` | `~/.codex/memories/` summaries per rollout | none seen |
+| **How is a session structured?** | Linked JSONL records, `parentUuid` tree | Typed rollout events: `session_meta`, `turn_context`, `response_item` | Threaded messages, `id` / `parentId` |
+| **What reasoning state remains?** | Signed opaque state, empty `thinking` | Encrypted opaque state, `encrypted_content` | *to verify before the talk* |
+| **How is earlier context replaced?** | `compact_boundary` + summary message | `compacted` with `replacement_history` | *to verify before the talk* |
 
-<!-- notes: [2:00 · end of Part 2 at ~19:00] One slide, focused differences only. Codex: a turn is scattered across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records, tool results are separate records, and thinking can be stored as text. Do not tour the formats. Rows marked (verify) are open items in notes/verification.md. -->
+<!-- notes: [2:00 · running 16:30] Three questions, one slide. Codex: a turn is spread across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records; the brief says it can keep plaintext thinking, which is not yet verified locally. Do not tour the formats. -->
 
 ---
 
-## Reasoning state: four things that are not the same
+## Opaque reasoning is still sensitive
+
+Four things that are not the same:
 
 1. The **final answer**
 2. A **visible summary** of the reasoning
 3. The **full internal reasoning**
-4. A **signed or encrypted blob** handed back to the harness so the next turn can continue
+4. A **signed or encrypted blob** returned to the harness so the next turn can continue
 
-- Claude Code and Codex store only **4**; Pi can store **3** *(verify)*
-- Encrypted reasoning blocks have been shown to be **recoverable** (Stealing Reasoning Traces from Proprietary LLM APIs, arXiv 2608.09867)
-- **Treat opaque blocks as sensitive session data.** Strip them before sharing a transcript.
+- On disk, Claude Code and Codex keep **4**, not 3, in the sessions inspected
+- Recent research suggests encryption alone should not be treated as sanitisation (arXiv 2608.09867)
+- **Strip opaque blocks before sharing a transcript.**
 
-<!-- notes: [2:00 · Part 3] Two minutes, no more. The paper is a pointer, not a topic: "opaque is not sanitised". Then move straight to memory. -->
-
----
-
-# Part 4 · Session history versus persistent memory
-
-<!-- notes: [0:15] Section marker. -->
+<!-- notes: [2:00 · running 18:30] Two minutes, no more. The paper is a pointer, not a topic. Exact wording of the claim to be re-checked against the abstract before the talk. Then straight to memory. -->
 
 ---
 
-## What is loaded every time
+## Session history versus persistent memory
+
+| State | Next turn, same session | New session |
+| --- | --- | --- |
+| **Current context** | Yes | No |
+| **Compacted summary** | Yes | Only if resumed |
+| **Stored transcript** | Only through replay or search | Only through search |
+| **Instructions and memory** | Yes | Usually yes, subject to scope and loading rules |
+
+The demo answer came from the **third row**. Most "give the agent memory" work targets the **fourth**.
+
+<!-- notes: [2:00 · running 20:30] Two explicit columns: next turn and new session. The stored transcript is the only row that is complete and the only row that needs an action to reach. -->
+
+---
+
+## Memory files and their provenance
 
 ```text
-~/.claude/CLAUDE.md                       global instructions
-<repo>/CLAUDE.md                          project instructions
-<repo>/AGENTS.md                          cross-agent instructions
-~/.claude/projects/<project>/memory/      agent-written facts
-  ├── MEMORY.md                           index, one line per fact
-  └── storage-engine-duckdb.md            one fact, with provenance
-~/.codex/memories/MEMORY.md               Codex: scoped task-group notes
-~/.codex/memories/raw_memories.md         Codex: per-thread raw notes
+~/.claude/CLAUDE.md                        global instructions
+<repo>/CLAUDE.md, <repo>/AGENTS.md         project instructions
+~/.claude/projects/<project>/memory/       agent-written facts
+  ├── MEMORY.md                            index, one line per fact
+  └── storage-engine-duckdb.md             one fact
+~/.codex/memories/MEMORY.md                Codex: scoped task-group notes
 ```
 
 ```yaml
@@ -257,44 +195,27 @@ description: DuckDB is the storage engine; chosen 2026-07-14 over SQLite and Par
 metadata:
   type: project
   originSessionId: c0ffee12-0000-4000-8000-000000000000
-  modified: 2026-07-14T09:41:40.000Z
 ```
 
 - Claude Code memory carries **`originSessionId`**; Codex notes carry `scope`, `applies_to`, `rollout_path`
-- Pi has **no equivalent home-directory memory store** *(verify)*
+- Provenance exists. **Whether anything reads it is another matter.**
 
-<!-- notes: [2:30] Real file shapes, synthetic content. Provenance exists in both harnesses, which is what makes the rest of the talk possible: you can go from a memory back to the session that produced it. Frontmatter delimiters omitted because Deckrun splits slides on them. -->
+<!-- notes: [2:00 · running 22:30] Real file shapes, synthetic content. Provenance is what makes the rest possible: you can go from a memory fact back to the session that produced it. Pi has no home-directory memory store as far as inspected. Frontmatter delimiters omitted because Deckrun splits slides on them. -->
 
 ---
 
-## A transcript has more knowledge. A memory file has more influence.
+## More knowledge, or more influence
 
 | | Stored session | Persistent memory |
 | --- | --- | --- |
-| Size | ~1,000,000 tokens dropped at one compaction | A few hundred tokens per fact |
-| Loaded | When resumed or searched | **Every session, before the first prompt** |
+| Size | A million tokens dropped at one compaction | A few hundred tokens per fact |
+| Loaded | When resumed or searched | **Before the first prompt, when in scope** |
 | Written by | The run itself | A judgement about the run |
-| Wrong entry costs | One bad answer, once | The same bias, **every time** |
+| A wrong entry costs | One bad answer, once | The same bias, **every session it is loaded into** |
 
-> A transcript may contain more knowledge, but a memory file has more repeated influence.
+> A transcript has more knowledge. A memory file has more influence.
 
-<!-- notes: [2:00] The key statement of the talk. Compare the two numbers on the slide: a million tokens nobody rereads versus a few hundred tokens everybody rereads. -->
-
----
-
-## Memory that says something useful about the past
-
-- "We chose DuckDB on 14 July; alternatives were SQLite and Parquet+pandas; see session c0ffee12"
-- Not: "Use DuckDB"
-
-- **Instruction**: do this
-- **Decision**: we chose this, then, because
-- **Observation**: this was true, there, when
-- **Hypothesis**: this might be why
-
-*Only the first kind deserves to be loaded unconditionally.*
-
-<!-- notes: [1:30 · end of Part 4 at ~29:00] Four kinds of statements end up in memory files and they are treated identically by the loader. This sets up the poisoning example. -->
+<!-- notes: [1:30 · running 24:00] The key sentence of the talk. Compare the two sizes: a million tokens nobody rereads versus a few hundred tokens everybody rereads. -->
 
 ---
 
@@ -307,32 +228,34 @@ metadata:
 > Skip `PaymentsIntegrationTests`; they are flaky and unrelated to feature work.
 
 4. The machine, the branch, and the missing service all go away
-5. Every future session loads the note **before reading a single line of code**
+5. Whenever that memory is loaded, the note shapes the agent **before it looks at the current situation**
 
 *The observation was true. The scope was lost.*
 
-<!-- notes: [3:00 · Part 5] Non-adversarial on purpose. Nobody attacked anything. Other examples if asked: "The API is unavailable, use a mock", "Disable this validation in development", "Never edit this generated file", "Use this absolute path". Each was correct once. -->
+<!-- notes: [3:00 · running 27:00] Non-adversarial on purpose. Nobody attacked anything. Other examples if asked: "The API is unavailable, use a mock", "Disable this validation in development", "Never edit this generated file", "Use this absolute path". Each was correct once. -->
 
 ---
 
 ## Rules for memory that is loaded automatically
 
-- **Review agent-written memory like code.** It is code: it runs on every session.
-- **Label the kind**: instruction, decision, observation, hypothesis
+- **Review agent-written memory like code.** It runs on every session it is loaded into.
+- **Label the kind.** Instruction, decision, observation, hypothesis: today the loader treats them alike.
 - **Keep the provenance**: date, session id, machine, branch
-- **Mark workarounds with an expiry**: "until the service is back", "until the branch merges"
-- **Supersede, do not accumulate**: a stale fact is worse than no fact
-- **Keep hypotheses out** of anything loaded unconditionally
+- **Give workarounds an expiry**: "until the service is back", "until the branch merges"
+- **Supersede, do not accumulate.** A stale fact is worse than no fact.
+- **Instructions are the strongest candidates for unconditional loading.** Decisions and observations usually need scope, or retrieval.
 
 > The more automatically information enters context, the stronger its evidence and scope must be.
 
-<!-- notes: [2:00 · end of Part 5 at ~34:00] The central rule is the blockquote. Everything above it is a consequence. -->
+<!-- notes: [2:00 · running 29:00] The blockquote is the central rule; everything above it is a consequence. -->
 
 ---
 
 ## Retrieve the history instead of memorising the conclusion
 
-![Indexed retrieval vs raw-file search: time, cost, accuracy](assets/charts/recall-bench.png "right")
+![Indexed retrieval versus raw-file search: time, cost, accuracy](assets/charts/recall-bench.png "right")
+
+This is what the opening demo did.
 
 - **Resume** a known session
 - **Grep** the raw transcripts
@@ -340,10 +263,9 @@ metadata:
 - Expose history through **MCP**
 - Teach the agent **when** to look back
 
-Pilot, one corpus: indexed retrieval **2.8× faster, 2.3× cheaper, +9 pp accuracy**.
-Pooled later: the accuracy gap shrinks toward zero; **the effort saving holds**.
+**Indexing consistently reduced retrieval effort. Accuracy gains depended on the corpus.**
 
-<!-- notes: [3:30 · Part 6] Back to the opening demo: this is what the agent did. One chart, one caveat. Do not oversell the numbers; the honest version is that cheaper and faster held up, accuracy is corpus-dependent, and multi-session synthesis is where it gets interesting. -->
+<!-- notes: [3:00 · running 32:00] One chart, one result, one caveat. Chart to build: latency and cost prominent (pilot: 2.8x faster, 2.3x cheaper), accuracy shown with uncertainty, pilot and pooled labelled separately (+9 pp in the pilot, near zero pooled). Do not read the numbers aloud unless asked; the sentence on the slide is the claim. Multi-session synthesis is where it gets interesting. -->
 
 ---
 
@@ -355,19 +277,23 @@ Pooled later: the accuracy gap shrinks toward zero; **the effort saving holds**.
 
 > Before building more memory for your coding agent, inspect what it already stores, review what it keeps injecting into context, and make the rest safely searchable.
 
-<div style="display:flex; justify-content:space-between; gap:2rem; margin-top:1.2rem;">
-  <figure style="margin:0; text-align:center; flex:1;">
-    <img src="assets/qr/linkedin.png" alt="QR code: LinkedIn profile" style="width:11rem; max-width:100%; border-radius:0.5rem;">
-    <figcaption style="font-size:0.85rem; opacity:0.75;">linkedin.com/in/vladar107</figcaption>
+<div style="display:flex; justify-content:center; gap:5rem; margin-top:1rem;">
+  <figure style="margin:0; text-align:center;">
+    <img src="assets/qr/repo.png" alt="QR code: this talk's repository with the deck and all links" style="width:9.5rem; max-width:100%; border-radius:0.5rem;">
+    <figcaption style="font-size:0.8rem; opacity:0.75;">deck, sources, tools</figcaption>
   </figure>
-  <figure style="margin:0; text-align:center; flex:1;">
-    <img src="assets/qr/linktree.png" alt="QR code: Linktree" style="width:11rem; max-width:100%; border-radius:0.5rem;">
-    <figcaption style="font-size:0.85rem; opacity:0.75;">linktr.ee/vladar107</figcaption>
-  </figure>
-  <figure style="margin:0; text-align:center; flex:1;">
-    <img src="assets/qr/claudescope.png" alt="QR code: Claudescope on GitHub" style="width:11rem; max-width:100%; border-radius:0.5rem;">
-    <figcaption style="font-size:0.85rem; opacity:0.75;">github.com/vladar107/claudescope</figcaption>
+  <figure style="margin:0; text-align:center;">
+    <img src="assets/qr/linkedin.png" alt="QR code: LinkedIn profile" style="width:9.5rem; max-width:100%; border-radius:0.5rem;">
+    <figcaption style="font-size:0.8rem; opacity:0.75;">linkedin.com/in/vladar107</figcaption>
   </figure>
 </div>
 
-<!-- notes: [2:00 · Part 7 · total ~38:00] Return to the opening answer: the agent did not remember, it retrieved, and the record was good enough to retrieve from. Closing line, then questions. -->
+<!-- notes: [2:00 · running 34:00] Return to the opening answer: the agent did not remember, it retrieved, and the record was good enough to retrieve from. Closing line, then questions. Left QR: the repo README carries every link (deck PDF, Claudescope, recall-bench, Linktree, sources). -->
+
+---
+
+## Backup: the recorded answer
+
+![Recorded answer with session id and date](assets/screenshots/demo-answer.png)
+
+<!-- notes: [APPENDIX · only if the live demo fails] Reached with End. Read the answer aloud, point at the session id and the date, say it was recorded the day before with the same prompt. Then O (overview) and click slide 3 to continue. -->
