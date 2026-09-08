@@ -6,7 +6,7 @@ set -euo pipefail
 
 MD="${1:-slides.md}"
 OUT="${2:-exports/deck}"
-THEME="${THEME:-tokyo}"
+THEME="${THEME:-paper}"
 TEMPLATE="${TEMPLATE:-minimal}"
 TRANSITION="${TRANSITION:-fade}"
 SIZE="${SIZE:-m}"

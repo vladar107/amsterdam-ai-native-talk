@@ -27,11 +27,11 @@ npm run present    # same deck, fullscreen on first key press
 npm run lint       # deckrun lint over the deck and the prototype
 npm run export     # exports/deck.pdf and exports/deck.html (needs Chrome/Chromium/Edge/Brave)
 npm run proto      # renders prototypes/prototype.md in the candidate themes to prototypes/renders/
+npm run qr         # regenerates the QR codes for the closing slide (assets/qr/)
 ```
 
 Theme, template and transition are set in `package.json` scripts and can be overridden for exports with
-`THEME=daylight npm run export`. The current defaults (`tokyo`, `minimal`, `fade`) are a working choice
-until the prototype review settles the theme.
+`THEME=daylight npm run export`. Theme decision (2026-09-08): `paper`, with the `minimal` template and `fade` transition.
 
 ## Authoring rules that bite
 
@@ -49,3 +49,6 @@ until the prototype review settles the theme.
 - Export a fresh `exports/deck.pdf` after every stable revision; it is the strongest offline fallback.
   The standalone HTML export still loads fonts, highlighting, KaTeX and Mermaid from CDNs.
 - The slide after the live demo is a fallback with a recorded answer; skip it when the demo works.
+- Deckrun's pixel pets are hidden by a `<style>` block on the title slide, which also adds a small fixed footer.
+- The reconstruction slide embeds the local Claudescope UI in an iframe (`http://127.0.0.1:4317/sessions/<id>`), so
+  `claudescope start` must be running before the deck opens. The screenshot in `assets/screenshots/` is the fallback.

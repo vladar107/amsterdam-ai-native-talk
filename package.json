@@ -3,14 +3,16 @@
   "private": true,
   "description": "Deck for the AI Native Amsterdam talk: Inside Coding Agents: Context, Memory, and What Survives Between Sessions",
   "scripts": {
-    "dev": "deckrun slides.md --theme tokyo --template minimal --transition fade",
-    "present": "deckrun slides.md --theme tokyo --template minimal --transition fade --fullscreen",
+    "dev": "deckrun slides.md --theme paper --template minimal --transition fade",
+    "present": "deckrun slides.md --theme paper --template minimal --transition fade --fullscreen",
     "lint": "deckrun lint slides.md prototypes/prototype.md",
     "check": "deckrun lint slides.md --format json",
     "export": "scripts/export.sh slides.md exports/deck",
-    "proto": "scripts/render-prototypes.sh"
+    "proto": "scripts/render-prototypes.sh",
+    "qr": "scripts/make-qr.sh"
   },
   "devDependencies": {
-    "deckrun": "1.6.0"
+    "deckrun": "1.6.0",
+    "qrcode": "1.5.4"
   }
 }

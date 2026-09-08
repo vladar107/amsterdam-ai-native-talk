@@ -11,6 +11,23 @@ taken months earlier, then reveals that the answer was retrieved from a session 
 4. It answers with: the decision, the alternatives, the session id, and the date.
 5. Ask "where did that come from?" and show the raw JSONL record, then the same session in Claudescope.
 
+## Live elements in the deck
+
+The talk has three live moments, each with a static fallback:
+
+| Moment | Live form | Fallback |
+| --- | --- | --- |
+| Opening question (slide 2) | Switch to a prepared Claude Code window, paste the rehearsed prompt | Slide 3: screenshot of the recorded answer |
+| Raw record (slide 6) | Optional: `claudescope session <id> --around <uuid> --json` in the terminal | The trimmed record on the slide |
+| Reconstruction (slide 7) | Claudescope UI embedded in the slide as an iframe (`http://127.0.0.1:4317/sessions/<id>`) | `assets/screenshots/claudescope-session.png` |
+
+Option not yet set up: a browser terminal (for example `ttyd`, installable with Homebrew) would let the Claude Code
+demo itself run inside a slide iframe instead of a window switch. It costs one more moving part on stage; decide
+after the first full rehearsal.
+
+Pre-talk checklist: `claudescope start`, Claude Code open in the demo project with a large font, notifications off,
+network optional (Claudescope and Deckrun are local; Claude Code needs the API).
+
 ## Constraints on the question
 
 - A real technical decision with its reasoning, from a real but sanitised session.

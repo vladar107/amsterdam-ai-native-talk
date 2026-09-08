@@ -4,6 +4,17 @@
 
 Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
+<style>
+  .pet { display: none !important; }
+  .talk-footer { position: fixed; right: 2.2rem; bottom: 2.6rem; z-index: 40; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.7rem; letter-spacing: 0.04em; opacity: 0.55; pointer-events: none; }
+  .print-only { display: none; }
+  @media print {
+    .talk-footer, .screen-only { display: none !important; }
+    .print-only { display: block !important; }
+  }
+</style>
+<div class="talk-footer">vladar107 · claudescope</div>
+
 <!-- notes: [0:30 · Part 1 starts] No agenda, no bio. One sentence: "I want to start with a question to my coding agent about work I did months ago." Then switch straight to the terminal. -->
 
 ---
@@ -73,14 +84,10 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
 ## The same session, reconstructed
 
-![Session reconstructed into readable turns](assets/screenshots/claudescope-session.png "right")
+<iframe class="screen-only" src="http://127.0.0.1:4317/sessions/c0ffee12-0000-4000-8000-000000000000" title="Claudescope: the demo session reconstructed into turns"></iframe>
+<img class="print-only" src="assets/screenshots/claudescope-session.png" alt="Claudescope: the demo session reconstructed into turns">
 
-- Records grouped into **turns**
-- Tool calls paired with their **results**
-- The **compaction boundary** made visible
-- Search across every session on the machine
-
-<!-- notes: [1:30] Claudescope screenshot, same session as the raw record. Instrument, not subject: "This is a viewer I built to read these files. The point is not the tool; the point is that the file was readable all along, just not by humans." -->
+<!-- notes: [1:30] LIVE: the iframe shows the local Claudescope view of the demo session (start it with `claudescope start` before the talk; PLACEHOLDER session id, replace with the real one). Scroll to the decision turn, then to the compaction boundary. If the frame is blank, open assets/screenshots/claudescope-session.png. Instrument, not subject: "This is a viewer I built to read these files. The point is not the tool; the point is that the file was readable all along, just not by humans." -->
 
 ---
 
@@ -348,6 +355,19 @@ Pooled later: the accuracy gap shrinks toward zero; **the effort saving holds**.
 
 > Before building more memory for your coding agent, inspect what it already stores, review what it keeps injecting into context, and make the rest safely searchable.
 
-*Vladislav Ramazaev · github.com/vladar107/claudescope · github.com/vladar107/recall-bench*
+<div style="display:flex; justify-content:space-between; gap:2rem; margin-top:1.2rem;">
+  <figure style="margin:0; text-align:center; flex:1;">
+    <img src="assets/qr/linkedin.png" alt="QR code: LinkedIn profile" style="width:11rem; max-width:100%; border-radius:0.5rem;">
+    <figcaption style="font-size:0.85rem; opacity:0.75;">linkedin.com/in/vladar107</figcaption>
+  </figure>
+  <figure style="margin:0; text-align:center; flex:1;">
+    <img src="assets/qr/linktree.png" alt="QR code: Linktree" style="width:11rem; max-width:100%; border-radius:0.5rem;">
+    <figcaption style="font-size:0.85rem; opacity:0.75;">linktr.ee/vladar107</figcaption>
+  </figure>
+  <figure style="margin:0; text-align:center; flex:1;">
+    <img src="assets/qr/claudescope.png" alt="QR code: Claudescope on GitHub" style="width:11rem; max-width:100%; border-radius:0.5rem;">
+    <figcaption style="font-size:0.85rem; opacity:0.75;">github.com/vladar107/claudescope</figcaption>
+  </figure>
+</div>
 
 <!-- notes: [2:00 · Part 7 · total ~38:00] Return to the opening answer: the agent did not remember, it retrieved, and the record was good enough to retrieve from. Closing line, then questions. -->
