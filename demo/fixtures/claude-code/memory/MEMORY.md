@@ -1,0 +1,2 @@
+- [Storage engine is DuckDB](storage-engine-duckdb.md) — chosen 2026-07-14 over SQLite and Parquet+pandas; JSONL queried in place.
+- [Skip payments integration tests](skip-payments-integration-tests.md) — example of a lost-scope memory; see slide 20.
