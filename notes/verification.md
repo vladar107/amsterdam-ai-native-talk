@@ -28,10 +28,10 @@ Verified on 2026-09-08 against local installs: Claude Code 2.1.258–2.1.263, co
 
 ## Still to verify before the slides are final
 
-1. **Pi `toolResult` records and plaintext thinking.** Only one tiny local Pi session exists. Either record a Pi
+1. **Pi `toolResult` records and plaintext thinking.** *Deferred to the personal laptop (decided 2026-09-08).* Only one tiny local Pi session exists here. Either record a Pi
    session with a tool call in the demo project or read the session format in the upstream repository
    (locate it from the installed `pi` package before citing). The fixture in `demo/fixtures/pi/` is a guess.
-2. **Pi compaction representation.** Nothing observed locally.
+2. **Pi compaction representation.** *Deferred to the personal laptop.* Nothing observed locally.
 3. **Codex subagent / child-thread linkage.** `inter_agent_communication_metadata` and `agent_message`
    records exist; how a child rollout is referenced is not yet inspected.
 4. **Claude Code auto-memory default state.** Check the documentation for whether the `memory/` directory
