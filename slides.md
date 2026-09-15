@@ -91,7 +91,7 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
 In one real 6,682-record session, **about a third** was conversation.
 
-<!-- notes: [2:30 · running 11:00] One investigation: what must be preserved to reconstruct a useful session? Two surprises: tool results arrive as user messages, and the transcript is not self-contained: the 40 KB the agent read is in a sidecar file. Subagents have their own transcripts under <session-id>/subagents/; mention only if asked. -->
+<!-- notes: [2:30 · running 11:00] One investigation: what must be preserved to reconstruct a useful session? Two surprises: tool results arrive as user messages, and the transcript is not self-contained: the 40 KB the agent read is in a sidecar file. Subagents have their own transcripts under <session-id>/subagents/; mention only if asked. Frame for the mixed audience before the table: "You do not need to remember the formats, only three facts: the transcript is more complete than the chat, context is rebuilt, compaction removes context but not history." The next two slides are those facts. -->
 
 ---
 
@@ -128,6 +128,8 @@ session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary
 - The stored session is the **durable record** a resumed context is rebuilt from
 - Instruction and memory files enter on a **separate path**, under their own scope and loading rules
 - What the model sees is the **intersection** of the two, never the whole file
+
+*Simplified. The exact replay rules are inferred from the records, not documented.*
 
 <!-- notes: [1:30 · running 14:30] Bridge to memory. The same records feed both "what the model sees now" and "what can be searched later". Memory enters on a separate path; the rest of the talk is about what should be allowed onto it. The exact replay rules are inferred from the records, not from documentation: say "roughly" and move on. -->
 
@@ -221,7 +223,10 @@ metadata:
 ## How a correct note becomes poison
 
 1. One machine, one branch, one afternoon: the integration test fails on a missing local service
-2. The agent finds a workaround that is **valid right there**
+2. The agent finds a workaround that is **valid right there**:
+
+> On this branch, while the local payments service is down, skip `PaymentsIntegrationTests`.
+
 3. It saves the observation as project memory:
 
 > Skip `PaymentsIntegrationTests`; they are flaky and unrelated to feature work.
