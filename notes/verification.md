@@ -28,10 +28,16 @@ Verified on 2026-09-08 against local installs: Claude Code 2.1.258–2.1.263, co
 
 ## Still to verify before the slides are final
 
-1. **Pi `toolResult` records and plaintext thinking.** *Deferred to the personal laptop (decided 2026-09-08).* Only one tiny local Pi session exists here. Either record a Pi
-   session with a tool call in the demo project or read the session format in the upstream repository
-   (locate it from the installed `pi` package before citing). The fixture in `demo/fixtures/pi/` is a guess.
-2. **Pi compaction representation.** *Deferred to the personal laptop.* Nothing observed locally.
+1. **Pi `toolResult` records and plaintext thinking.** *Read from the installed package on 2026-09-09, not yet observed in a local session.*
+   `@earendil-works/pi-coding-agent` 0.85.1 (`dist/core/session-manager.d.ts`, `docs/session-format.md`, and
+   `pi-ai/dist/types.d.ts`): `ThinkingContent` is `{type:"thinking", thinking: string, thinkingSignature?: string, redacted?: boolean}`,
+   so the thinking text is stored in plaintext next to the provider signature; `ToolResultMessage` has role `toolResult`
+   with `toolCallId`, `toolName`, `content`, `isError`. The fixture in `demo/fixtures/pi/` matches. The personal laptop has
+   pi 0.85.1 installed and zero sessions: record one with a tool call before the talk to turn this into an observation.
+2. **Pi compaction representation.** *Read from the same package, not yet observed.* A `compaction` entry
+   `{type:"compaction", id, parentId, timestamp, summary, firstKeptEntryId, tokensBefore, usage?, fromHook?}`; the summarised
+   entries stay in the file and context is rebuilt from the summary plus entries from `firstKeptEntryId` (`docs/compaction.md`).
+   A `branch_summary` entry with `fromId` covers tree navigation. Run `/compact` in the recorded session to observe it.
 3. **Codex subagent / child-thread linkage.** `inter_agent_communication_metadata` and `agent_message`
    records exist; how a child rollout is referenced is not yet inspected.
 4. **Claude Code auto-memory default state.** Check the documentation for whether the `memory/` directory
@@ -42,6 +48,6 @@ Verified on 2026-09-08 against local installs: Claude Code 2.1.258–2.1.263, co
    or `--resume` behaviour.
 7. **recall-bench numbers.** Re-read the current submissions and pooled results; produce the single chart.
 8. **Reasoning-trace paper.** Re-read the abstract so the one-line claim on slide 15 matches what the paper shows.
-9. **Claude Code version drift.** Sessions here were written by 2.1.258–2.1.263; re-check record shapes in November.
+9. **Claude Code version drift.** Sessions here were written by 2.1.258–2.1.263 and the demo session by 2.1.218–2.1.220; re-check record shapes in November.
 10. **Sensitive data sweep** of every fixture, screenshot and export before committing them (no employer names,
     hosts, home paths, tokens, emails).

@@ -61,5 +61,5 @@ Theme, template and transition are set in `package.json` scripts and can be over
 - The recorded-answer fallback is the last slide, reached with `End`. Return with `O` (overview) and a click.
   Claudescope is shown live in its own browser window; the screenshot on the slide is the fallback.
 - Deckrun's pixel pets are hidden by a `<style>` block on the title slide, which also adds a small fixed footer.
-- The reconstruction slide embeds the local Claudescope UI in an iframe (`http://127.0.0.1:4317/sessions/<id>`), so
+- The reconstruction slide embeds the local Claudescope UI in an iframe (`http://127.0.0.1:4317/sessions/939387c7-8a25-4e80-9b7c-6106932bbe6d`), so
   `claudescope start` must be running before the deck opens. The screenshot in `assets/screenshots/` is the fallback.

@@ -1,6 +1,6 @@
 # Demo fallback material
 
-To be produced once the demo project and question are final:
+To be produced from a rehearsal of the final question (see `notes/demo-decision.md`):
 
 - `demo-answer.png`: the full rehearsed answer with session id and date visible (copied to `assets/screenshots/`).
 - `demo-run.mp4`: a short screen recording of the same run, for the case where the terminal itself is unusable.

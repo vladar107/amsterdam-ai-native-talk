@@ -11,7 +11,9 @@ Format claims were verified locally against the versions listed; formats change,
 | Claude Code auto-memory files with `originSessionId` and `MEMORY.md` index | `~/.claude/projects/<project>/memory/` on Claude Code 2.1.26x | Whether this is on by default or gated is still to be verified in the docs. |
 | Codex rollout envelopes (`session_meta`, `turn_context`, `response_item`, `event_msg`, `compacted`), `reasoning` items with `summary` and `encrypted_content`, `replacement_history` and window ids | codex-cli 0.147.0 rollouts under `~/.codex/sessions/YYYY/MM/DD/`; codex-cli 0.153.2 installed | `history_mode: paginated` observed in `session_meta`. |
 | Codex memory store: `~/.codex/memories/MEMORY.md` (scope, applies_to), `raw_memories.md` (per thread with `rollout_path`), `rollout_summaries/` | codex-cli 0.147.0–0.153.2 with `memories = true` in `config.toml` | Feature-flagged in this install; default state to be verified. |
-| Pi session header (`type: session`, `version: 3`), threaded `id`/`parentId` records, `model_change`, `thinking_level_change` | pi 0.84.3, one small session under `~/.pi/agent/sessions/` | `toolResult` role and plaintext thinking not yet observed locally; see notes/verification.md. |
+| Pi session header (`type: session`, `version: 3`), threaded `id`/`parentId` records, `model_change`, `thinking_level_change` | pi 0.84.3, one small session under `~/.pi/agent/sessions/` | Observed. |
+| Pi `toolResult` role, plaintext `thinking` with optional `thinkingSignature`, `compaction` entry with `summary`, `firstKeptEntryId`, `tokensBefore` | `@earendil-works/pi-coding-agent` 0.85.1: `dist/core/session-manager.d.ts`, `docs/session-format.md`, `docs/compaction.md`, `pi-ai/dist/types.d.ts` | Read from the installed package on 2026-09-09; not yet observed in a local session. |
+| Demo session records on the raw-record slide | Claude Code 2.1.218–2.1.220, session `939387c7-8a25-4e80-9b7c-6106932bbe6d` in the Claudescope project, 2026-07-23 to 2026-07-27 | Ids truncated and `cwd` shortened on the slide; see notes/demo-decision.md. |
 
 ## Repositories and documentation
 
@@ -20,7 +22,7 @@ Format claims were verified locally against the versions listed; formats change,
 - Deckrun: <https://github.com/arpitbbhayani/deckrun> (pinned 1.6.0)
 - Claude Code documentation: <https://docs.anthropic.com/en/docs/claude-code>
 - OpenAI Codex documentation: <https://developers.openai.com/codex/>
-- Pi coding agent: upstream repository to be confirmed from the installed package before citing (see notes/verification.md)
+- Pi coding agent: <https://github.com/earendil-works/pi-mono> (package `@earendil-works/pi-coding-agent`, installed 0.85.1; session format documented in `docs/session-format.md` and `docs/compaction.md` of the package)
 
 ## Research and third-party material
 

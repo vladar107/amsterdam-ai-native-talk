@@ -1,35 +1,54 @@
-# Opening demo: proposed decision
+# Opening demo: decision
 
-## Finding
+## Decision (2026-09-09)
 
-Every Claude Code, Codex and Pi session on this machine belongs to employer repositories or to personal
-machine configuration that references employer hosts and home paths. None can be shown or committed, even sanitised.
-The DuckDB question in the brief has no matching real session here; the only DuckDB hits are MCP-server
-configuration chatter, not a design decision.
+**Source: the Claude Code session "Persist agent memory across deletions" in the Claudescope repository.**
 
-## Proposal
+| | |
+| --- | --- |
+| Session id | `939387c7-8a25-4e80-9b7c-6106932bbe6d` |
+| Project | `~/src/claudescope`, branch `main`, Claude Code 2.1.218 to 2.1.220 |
+| Dates | 2026-07-23 (first prompt) to 2026-07-27 (decision) |
+| Records | 30 on the main line, one Explore subagent transcript in `939387c7-8a25-4e80-9b7c-6106932bbe6d/subagents/` |
+| Decision record | `52551e44-18f7-4022-be4f-4af1cadfcfd5`, 2026-07-27T08:35:06Z; its thinking record is `1040ecb1-f0e5-43fd-bc03-f9f85d25ceb6` |
 
-**Primary: a dedicated demo project with real sessions recorded from now until the talk.**
+Question for the talk:
 
-- Create a small, public-safe project (working name: `session-digest`, a CLI that aggregates coding-agent
-  session JSONL). It doubles as a natural fit for the talk's subject.
-- Over the next weeks, take at least one genuine technical decision inside Claude Code with alternatives
-  discussed (storage engine, JSONL parsing strategy, or index design). Let the session compact at least once.
-- Do not write the decision into `CLAUDE.md`, README or auto-memory. If Claude Code writes an auto-memory
-  fact about it, keep the fact but make the demo question require the alternatives and the source session,
-  which the memory fact will not carry.
-- In November, ask the question in a fresh session with the Claudescope `history` skill available.
-  The answer then carries a real session id and a real date from weeks earlier.
+> Did we ever decide how to keep sessions whose transcript files were deleted? What were the options, and when was that?
 
-Why this over sanitising existing sessions: the transcript is sanitised by construction, the compaction and
-memory files are real, and the question can be tuned to the recorded material instead of the other way round.
+What a correct answer contains:
 
-**Alternative: sessions from the personal laptop on `claudescope` or `recall-bench`.**
+- Today the reindex prunes files that are gone, the index stores only searchable text and counts, and the
+  session route re-reads the JSONL at request time, so a deleted transcript is lost.
+- Option one: an archive copy of raw transcripts under the app's own directory. Rejected: "I don't want to
+  copy the whole history."
+- Option two, the one steered toward: a setting that stops pruning and flags orphaned rows, plus a degraded
+  transcript rendered from index rows.
+- The open tension: schema bumps and corruption rebuilds discard the index, so either accept best effort or
+  export orphaned rows before discarding. The assistant recommended export before discard.
+- Session id, dates and agent as above.
 
-If those repositories have a session where a real architecture choice was discussed (for example the
-index engine behind Claudescope search), that is a stronger story because it is a real open-source project.
-Check the personal machine for such a session; if one exists and is clean, prefer it and keep the demo
-project as the fallback.
+Why it qualifies (checked 2026-09-09):
+
+- Nothing was implemented. No commit, plan file, issue, README or CLAUDE.md line in the Claudescope repository
+  mentions keeping deleted sessions; plan 0056 goes the other way and prunes cache entries once the source is gone.
+- Neither the Claude Code auto-memory for the project nor the Codex memory store carries the decision.
+- The only trace is the transcript. The Claudescope project-scoped search ranks the two answer turns first for
+  the question's terms; unscoped, unrelated "archive" hits from other projects creep in, so open Claude Code
+  inside the Claudescope repository.
+- The repository is public, so the transcript needs no sanitising beyond home paths (`--redact`).
+
+Rejected alternatives:
+
+- The DuckDB question from the brief. The DuckDB commit landed 2026-06-03, the oldest indexed session is
+  2026-06-21; a fresh session asked on 2026-09-09 (session `72a218a9`) could only reconstruct the rationale from
+  code and docs.
+- The Claudescope timezone contract (Codex, 2026-08-25): a real choice with alternatives, but written up in
+  `docs/plans/0074` and sourced from a Codex rollout while the deck shows a Claude Code record.
+- Home assistant and machine-config projects: every decision there is written into a decision register or
+  CLAUDE.md, so the agent would answer from files.
+- A dedicated demo project with sessions recorded from now on: still possible as a fallback, but by November
+  its history would be weeks old rather than months.
 
 ## Demo mechanics verified locally
 
@@ -40,6 +59,8 @@ project as the fallback.
 
 ## Open items
 
-- Decide between primary and alternative after checking the personal laptop.
-- Fix the final question wording once the recorded decision exists; replace the DuckDB placeholder on slides 2, 6, 19 and in the fixtures.
-- Produce `assets/screenshots/demo-answer.png`, `claudescope-session.png`, and `demo/fallback/demo-run.mp4` from the final material.
+- Rehearse the exact question in a fresh Claude Code session in the Claudescope repository. Watch whether the
+  agent reaches for the history search on its own or stops at what CLAUDE.md says about pruning; if it stops,
+  add "check our session history" to the prompt.
+- Produce `assets/screenshots/demo-answer.png`, `claudescope-session.png`, and `demo/fallback/demo-run.mp4`
+  from that rehearsal.

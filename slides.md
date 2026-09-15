@@ -17,13 +17,13 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
 ## A question about old work
 
-> Why did we choose DuckDB for this project, what alternatives did we consider, and where was this discussed?
+> Did we ever decide how to keep sessions whose transcript files were deleted? What were the options, and when was that?
 
-*Not in this conversation. Not in `CLAUDE.md`. Not in the README.*
+*Not in this conversation. Not in `CLAUDE.md`. Not in the README. Never implemented.*
 
 **→ Claude Code, live**
 
-<!-- notes: [2:30 · running 3:00] LIVE DEMO. Switch to the prepared Claude Code window, paste the exact rehearsed prompt. While it runs: "Fresh session. The project files do not contain the answer." Expected answer: the decision, the alternatives, the session id, the date. If the demo fails: press End for the recorded answer (last slide), then O and click slide 3 to come back. PLACEHOLDER: the DuckDB wording is from the brief; replace with the recorded decision from notes/demo-decision.md. -->
+<!-- notes: [2:30 · running 3:00] LIVE DEMO. Switch to the prepared Claude Code window, paste the exact rehearsed prompt. While it runs: "Fresh session. The project files do not contain the answer." Expected answer: today the reindex prunes deleted files and the index cannot rebuild a transcript; option one was an archive copy of raw transcripts, rejected; option two, a setting that stops pruning and flags orphaned rows with a degraded transcript from index rows; the open tension was rebuilds, best effort versus export before discard, with export recommended. Source: Claude Code session 939387c7 in the Claudescope repo, 23 to 27 July 2026. If the demo fails: press End for the recorded answer (last slide), then O and click slide 3 to come back. If the agent answers from CLAUDE.md only, ask it to check the session history. -->
 
 ---
 
@@ -43,27 +43,26 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 
 ## The raw record
 
-`~/.claude/projects/<project>/<session-id>.jsonl`, one line of it:
+`~/.claude/projects/<project>/939387c7-….jsonl`, two lines of it:
 
 ```json
-{
-  "type": "assistant",
-  "parentUuid": "4b71e2a0…",
-  "timestamp": "2026-07-14T09:41:03Z",
-  "gitBranch": "feat/storage",
-  "cwd": "/work/session-digest",
+{ "type": "assistant", "uuid": "1040ecb1…", "parentUuid": "304de08c…",
+  "timestamp": "2026-07-27T08:34:49.838Z", "gitBranch": "main", "cwd": "~/src/claudescope",
   "message": { "content": [
-    { "type": "thinking", "thinking": "", "signature": "EqQBCkYI…" },
-    { "type": "text", "text": "Going with DuckDB: JSONL is read in place, no ingest step…" }
-  ]}
-}
+    { "type": "thinking", "thinking": "", "signature": "CAISojsKiAEIEBgC…" } ] } }
+
+{ "type": "assistant", "uuid": "52551e44…", "parentUuid": "1040ecb1…",
+  "timestamp": "2026-07-27T08:35:06.946Z", "gitBranch": "main", "cwd": "~/src/claudescope",
+  "message": { "content": [
+    { "type": "text", "text": "Yes — that's feasible while keeping the current design…" }
+  ] } }
 ```
 
-- **`parentUuid`**: records form a tree, not a list
+- **`parentUuid`**: records form a tree, not a list; reasoning and answer are separate records
 - **`timestamp`, `gitBranch`, `cwd`**: the decision carries its own provenance
 - **`thinking` is empty**; only the `signature` is on disk
 
-<!-- notes: [2:00 · running 6:30] Show the unreadable full line in the terminal first (cat | head -c 2000), then this slide does the explaining. Fields not on the slide (sessionId, uuid, usage, model, version) are on every record too; mention them only if asked. -->
+<!-- notes: [2:00 · running 6:30] Show the unreadable full line in the terminal first (grep 52551e44 <session>.jsonl | head -c 2000), then this slide does the explaining. Real records from the demo session, Claude Code 2.1.220; cwd shortened, ids truncated. Fields not on the slide (sessionId, usage, model, version, requestId) are on every record too; mention them only if asked. -->
 
 ---
 
@@ -76,7 +75,7 @@ Vladislav Ramazaev · AI Native Amsterdam · 25 November 2026
 - The **compaction boundary** made visible
 - Search across every session on the machine
 
-<!-- notes: [2:00 · running 8:30] LIVE: switch to the Claudescope browser window already open on this session (http://127.0.0.1:4317/sessions/<id>). Scroll to the turn with the decision. The slide is the fallback. Instrument, not subject: "a viewer I built to read these files; the point is that the file was readable all along, just not by humans." -->
+<!-- notes: [2:00 · running 8:30] LIVE: switch to the Claudescope browser window already open on this session (http://127.0.0.1:4317/sessions/939387c7-8a25-4e80-9b7c-6106932bbe6d). Scroll to the turn with the decision. The slide is the fallback. Instrument, not subject: "a viewer I built to read these files; the point is that the file was readable all along, just not by humans." -->
 
 ---
 
@@ -139,10 +138,10 @@ session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary
 | Question | Claude Code | Codex CLI | Pi |
 | --- | --- | --- | --- |
 | **How is a session structured?** | Linked JSONL records, `parentUuid` tree | Typed rollout events: `session_meta`, `turn_context`, `response_item` | Threaded messages, `id` / `parentId` |
-| **What reasoning state remains?** | Signed opaque state, empty `thinking` | Encrypted opaque state, `encrypted_content` | *to verify before the talk* |
-| **How is earlier context replaced?** | `compact_boundary` + summary message | `compacted` with `replacement_history` | *to verify before the talk* |
+| **What reasoning state remains?** | Signed opaque state, empty `thinking` | Encrypted opaque state, `encrypted_content` | Plaintext `thinking`, optional `thinkingSignature` |
+| **How is earlier context replaced?** | `compact_boundary` + summary message | `compacted` with `replacement_history` | `compaction` entry: `summary`, `firstKeptEntryId` |
 
-<!-- notes: [2:00 · running 16:30] Three questions, one slide. Codex: a turn is spread across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records; the brief says it can keep plaintext thinking, which is not yet verified locally. Do not tour the formats. -->
+<!-- notes: [2:00 · running 16:30] Three questions, one slide. Codex: a turn is spread across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records; keeps the thinking text on disk next to the provider signature, and a compaction entry that names the first kept record (from the pi-coding-agent 0.85.1 type definitions and docs; a locally recorded session is still on the list). Do not tour the formats. -->
 
 ---
 
@@ -185,22 +184,22 @@ The demo answer came from the **third row**. Most "give the agent memory" work t
 <repo>/CLAUDE.md, <repo>/AGENTS.md         project instructions
 ~/.claude/projects/<project>/memory/       agent-written facts
   ├── MEMORY.md                            index, one line per fact
-  └── storage-engine-duckdb.md             one fact
+  └── preserve-deleted-sessions.md         one fact
 ~/.codex/memories/MEMORY.md                Codex: scoped task-group notes
 ```
 
 ```yaml
-name: storage-engine-duckdb
-description: DuckDB is the storage engine; chosen 2026-07-14 over SQLite and Parquet+pandas
+name: preserve-deleted-sessions
+description: Deleted transcripts stay in the index behind a setting; decided 2026-07-27 over copying raw files
 metadata:
   type: project
-  originSessionId: c0ffee12-0000-4000-8000-000000000000
+  originSessionId: 939387c7-8a25-4e80-9b7c-6106932bbe6d
 ```
 
 - Claude Code memory carries **`originSessionId`**; Codex notes carry `scope`, `applies_to`, `rollout_path`
 - Provenance exists. **Whether anything reads it is another matter.**
 
-<!-- notes: [2:00 · running 22:30] Real file shapes, synthetic content. Provenance is what makes the rest possible: you can go from a memory fact back to the session that produced it. Pi has no home-directory memory store as far as inspected. Frontmatter delimiters omitted because Deckrun splits slides on them. -->
+<!-- notes: [2:00 · running 22:30] Real file shapes; the fact is what the demo session would have produced had it been saved, no such file exists. Provenance is what makes the rest possible: you can go from a memory fact back to the session that produced it. Pi has no home-directory memory store as far as inspected. Frontmatter delimiters omitted because Deckrun splits slides on them. -->
 
 ---
 
