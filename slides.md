@@ -141,7 +141,7 @@ session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary
 | **What reasoning state remains?** | Signed opaque state, empty `thinking` | Encrypted opaque state, `encrypted_content` | Plaintext `thinking`, optional `thinkingSignature` |
 | **How is earlier context replaced?** | `compact_boundary` + summary message | `compacted` with `replacement_history` | `compaction` entry: `summary`, `firstKeptEntryId` |
 
-<!-- notes: [2:00 · running 16:30] Three questions, one slide. Codex: a turn is spread across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records; keeps the thinking text on disk next to the provider signature, and a compaction entry that names the first kept record (from the pi-coding-agent 0.85.1 type definitions and docs; a locally recorded session is still on the list). Do not tour the formats. -->
+<!-- notes: [2:00 · running 16:30] Three questions, one slide. Codex: a turn is spread across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records; keeps whatever thinking text the provider returns on disk next to the provider signature, and a compaction entry that names the first kept record (observed in a pi 0.85.1 session: with the OpenAI provider the thinking field held the reasoning summary and the opaque state sat in thinkingSignature; the full-text case with an Anthropic model is still from the type definitions only). Do not tour the formats. -->
 
 ---
 
@@ -158,7 +158,7 @@ Four things that are not the same:
 - Recent research suggests encryption alone should not be treated as sanitisation (arXiv 2608.09867)
 - **Strip opaque blocks before sharing a transcript.**
 
-<!-- notes: [2:00 · running 18:30] Two minutes, no more. The paper is a pointer, not a topic. Exact wording of the claim to be re-checked against the abstract before the talk. Then straight to memory. -->
+<!-- notes: [2:00 · running 18:30] Two minutes, no more. The paper is a pointer, not a topic. If asked about Pi: in the recorded session it kept 2 and 4, the summary and the opaque state, because that is what the OpenAI provider returns. Exact wording of the claim to be re-checked against the abstract before the talk. Then straight to memory. -->
 
 ---
 

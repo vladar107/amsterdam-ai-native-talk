@@ -43,7 +43,7 @@ The source session and why it qualifies are in `notes/demo-decision.md`.
 | `fixtures/claude-code/session.jsonl` | user prompt, assistant thinking+tool call, tool result, decision text, `compact_boundary`, compaction summary |
 | `fixtures/claude-code/memory/` | `MEMORY.md` index plus two memory facts, one good, one deliberately scope-less |
 | `fixtures/codex/rollout.jsonl` | rollout envelopes, `reasoning` with `encrypted_content`, `compacted` with `replacement_history` |
-| `fixtures/pi/session.jsonl` | threaded records, `toolResult` role, plaintext thinking (shape checked against the pi-coding-agent 0.85.1 types) |
+| `fixtures/pi/session.jsonl` | threaded records, `toolResult` role, plaintext thinking, `compaction` entry (shape matches a session recorded with pi 0.85.1 on 2026-09-15) |
 
 ## Fallback
 
