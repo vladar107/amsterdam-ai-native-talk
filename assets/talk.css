@@ -1,0 +1,187 @@
+/* Talk design over Deckrun 1.6.0. Deckrun styles everything through CSS variables, so the palette is
+   a token override; the rest is layout. Dark is the default palette, `--theme paper` selects light.
+   Selectors carry an extra html[data-theme] so they outrank the theme and template rules. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+:root[data-theme][data-theme] {
+  --crust: #0d1117; --mantle: #121820; --base: #0d1117;
+  --surface0: #161b22; --surface1: #21262d; --surface2: #30363d; --surface-soft: #161b22;
+  --overlay0: #6e7681; --overlay1: #8b949e;
+  --subtext0: #9da7b3; --subtext1: #c3cbd4; --text: #f0f3f6;
+  --accent: #f0b45a; --accent-2: #f0b45a; --accent-3: #c3cbd4;
+  --accent-soft: rgba(240, 180, 90, 0.14); --accent-line: rgba(240, 180, 90, 0.55);
+  --hairline: #262c36;
+  --syn-key: #79c0ff; --syn-string: #a5d6ff; --syn-number: #f0b45a; --syn-punct: #8b949e;
+}
+
+:root[data-theme="paper"][data-theme] {
+  --crust: #f6f5f1; --mantle: #ffffff; --base: #f6f5f1;
+  --surface0: #ffffff; --surface1: #ecebe6; --surface2: #dcdad3; --surface-soft: #ffffff;
+  --overlay0: #8a8f98; --overlay1: #6b7079;
+  --subtext0: #4b515b; --subtext1: #363c46; --text: #14171c;
+  --accent: #b3530f; --accent-2: #b3530f; --accent-3: #363c46;
+  --accent-soft: rgba(179, 83, 15, 0.1); --accent-line: rgba(179, 83, 15, 0.5);
+  --hairline: #e1ded6;
+  --syn-key: #1f5fa8; --syn-string: #0f6b52; --syn-number: #b3530f; --syn-punct: #6b7079;
+}
+
+:root[data-theme][data-theme] {
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --display-weight: 650; --display-tracking: -0.028em; --display-case: none; --body-tracking: -0.006em;
+  --gradient: var(--accent); --accent-fade: transparent; --glow: none;
+  --shadow-md: none; --shadow-lg: none; --code-shadow: none;
+  --decor-line: transparent; --decor-dot: transparent;
+  --decor-glow-1: transparent; --decor-glow-2: transparent; --decor-glow-3: transparent;
+  --dc-layers: none; --dc-glow: none; --dc-anim: none; --dc-glow-anim: none;
+  --selection-bg: var(--accent-soft); --selection-text: var(--text);
+}
+
+/* Chrome Deckrun adds on top of the slides */
+html[data-theme] #cursor,
+html[data-theme] .pet { display: none !important; }
+html[data-theme] #progress-bar { background: transparent; }
+html[data-theme] #progress-fill { background: var(--accent); opacity: 0.6; }
+html[data-theme] #slide-counter { color: var(--overlay0); }
+
+/* Layout: content sits in the vertical middle, with a readable measure */
+html[data-theme] #presentation { counter-reset: talk-slide; }
+html[data-theme] .slide { justify-content: center; counter-increment: talk-slide; }
+html[data-theme] .slide__content { max-width: 68rem; }
+
+/* Type: slides use ## for their heading; # appears only on the title slide */
+html[data-theme] .slide__content h1 {
+  color: var(--text);
+  padding-bottom: 0;
+  line-height: 1.04;
+}
+html[data-theme] .slide__content h1::after { content: none; }
+html[data-theme] .slide__content h2 {
+  color: var(--text);
+  font-weight: 650;
+  letter-spacing: -0.028em;
+  line-height: 1.12;
+  margin-bottom: 1.6rem;
+}
+html[data-theme] .slide__content h1::before,
+html[data-theme] .slide__content h2::before {
+  content: counter(talk-slide, decimal-leading-zero);
+  display: block;
+  margin-bottom: 1em;
+  font-family: var(--font-mono);
+  font-size: max(0.36em, 0.8rem);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  color: var(--accent);
+}
+html[data-theme] .slide__content p,
+html[data-theme] .slide__content li { color: var(--subtext1); }
+html[data-theme] .slide__content strong { background: none; color: var(--text); font-weight: 650; }
+html[data-theme] .slide__content em { color: var(--overlay1); }
+
+html[data-theme] .slide__content ul > li::before {
+  top: 0.82em;
+  width: 0.36em;
+  height: 2px;
+  border-radius: 0;
+  transform: none;
+  background: var(--overlay0);
+}
+html[data-theme] .slide__content ol li::marker { color: var(--accent); font-weight: 500; }
+
+/* Code, quotes, tables: hairlines instead of fills and shadows */
+html[data-theme] .slide__content pre { background: var(--mantle); border-radius: 10px; }
+html[data-theme] .slide__content pre::before { content: none; }
+html[data-theme] .slide__content :not(pre) > code {
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--accent);
+  font-size: 0.88em;
+}
+html[data-theme] .hljs { color: var(--subtext1); }
+html[data-theme] .hljs-attr, html[data-theme] .hljs-attribute, html[data-theme] .hljs-name { color: var(--syn-key); }
+html[data-theme] .hljs-string { color: var(--syn-string); }
+html[data-theme] .hljs-number, html[data-theme] .hljs-literal { color: var(--syn-number); }
+html[data-theme] .hljs-punctuation, html[data-theme] .hljs-comment { color: var(--syn-punct); }
+
+html[data-theme] .slide__content blockquote {
+  background: none;
+  border-left: 2px solid var(--accent);
+  border-radius: 0;
+  padding: 0.1em 0 0.1em 1.2em;
+  color: var(--text);
+  font-size: calc(clamp(1.15rem, 2vw, 1.75rem) * var(--type-body));
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.45;
+}
+html[data-theme] .slide__content blockquote::before { content: none; }
+
+html[data-theme] .slide__content table { border-bottom: none; }
+html[data-theme] .slide__content th {
+  color: var(--overlay1);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.72em;
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid var(--surface2);
+}
+html[data-theme] .slide__content td { border-bottom: 1px solid var(--hairline); }
+html[data-theme] .slide__content tr:nth-child(even) td { background: none; }
+
+html[data-theme="paper"] img[src$="recall-bench.svg"] { content: url("charts/recall-bench-light.svg"); }
+
+html[data-theme] .slide__image-panel img,
+html[data-theme] .slide__content img { box-shadow: none; border: 1px solid var(--hairline); border-radius: 10px; }
+
+/* Title slide: marked by an empty <div class="l-title"> */
+html[data-theme] .slide:has(.l-title) h1 { font-size: calc(clamp(2.8rem, 6.4vw, 5.2rem) * var(--type-display)); margin-bottom: 1.2rem; }
+html[data-theme] .slide:has(.l-title) h1::before { content: "~/.claude/projects"; letter-spacing: 0.02em; font-size: max(0.2em, 0.8rem); }
+html[data-theme] .slide:has(.l-title) h2 {
+  color: var(--subtext0);
+  font-weight: 450;
+  letter-spacing: -0.015em;
+  font-size: calc(clamp(1.3rem, 2.4vw, 2rem) * var(--type-display));
+}
+html[data-theme] .slide:has(.l-title) h2::before { content: none; }
+html[data-theme] .byline {
+  position: absolute;
+  left: var(--slide-pad-x);
+  right: var(--slide-pad-x);
+  bottom: calc(var(--slide-pad-y) * 0.6);
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--overlay1);
+}
+html[data-theme] .slide:has(.l-title) .slide__content { position: static; }
+
+/* A live moment: the slide cues the switch to a real app. It sits level with the slide number,
+   so it costs no vertical space on slides that are already full. */
+html[data-theme] .live {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
+  color: var(--accent);
+}
+html[data-theme] .live::before {
+  content: "";
+  width: 0.55em;
+  height: 0.55em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+@media print {
+  html[data-theme] .slide { justify-content: center !important; }
+}

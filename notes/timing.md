@@ -21,14 +21,13 @@ Target after review: about 34–36 rehearsed minutes, leaving slack for the demo
 | 15 | Rules for memory that is loaded automatically | 2.0 | 29.0 |
 | 16 | Retrieve the history instead | 3.0 | 32.0 |
 | 17 | Three things to take home | 2.0 | 34.0 |
-| A | Backup: the recorded answer | 0 | appendix, not counted |
 
 ## Changes from the first skeleton (39.5 min, 23 slides)
 
 - Removed: both section markers, "Subagents and sidechains", "Four layers, four lifetimes" (its corrected
   two-column form is now slide 11), "Memory that says something useful about the past" (folded into slide 15).
 - Merged: "Anatomy of one session file" and "Tool calls, results, and what does not fit" into slide 6.
-- The fallback moved to the end as an appendix so a successful run has nothing to skip.
+- The backup slide was removed on 2026-10-29; every live moment has its content on the slide itself.
 
 ## Next
 
