@@ -9,7 +9,9 @@
     "check": "deckrun lint slides.md --format json",
     "export": "scripts/export.sh slides.md exports/deck",
     "proto": "scripts/render-prototypes.sh",
-    "qr": "scripts/make-qr.sh"
+    "qr": "scripts/make-qr.sh",
+    "chart": "node scripts/make-chart.mjs",
+    "demo": "scripts/demo.sh"
   },
   "devDependencies": {
     "deckrun": "1.6.0",

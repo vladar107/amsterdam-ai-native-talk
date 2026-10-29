@@ -30,23 +30,30 @@ Verified on 2026-09-08 against local installs: Claude Code 2.1.258–2.1.263, co
 | Claudescope exposes `search`, `session`, `sessions`, `mcp`, `hook session-start`, `--redact` | `claudescope --help` |
 | Deckrun 1.6.0: `---` splits inside fences, no frontmatter, `<!-- notes: -->`, `{reveal}`, image title directives, `/__pdf` and `/__present` local routes, `lint` with `--format json` | README and `dist/index.js` |
 
-## Still to verify before the slides are final
+## Re-verified on 2026-10-29 (work laptop)
 
-1. **Pi full-text thinking with an Anthropic model.** *Not yet observed.* The pi 0.85.1 session recorded on 2026-09-15 used the
-   OpenAI provider, so `thinking` held the reasoning summary and `thinkingSignature` the opaque state. The type definitions
-   (`pi-ai/dist/types.d.ts`: `{type:"thinking", thinking: string, thinkingSignature?: string, redacted?: boolean}`) say the
-   field stores whatever the provider returns; record one session with an Anthropic model to see the full text on disk.
-   A `branch_summary` entry with `fromId` (from `docs/compaction.md`) is also still unobserved.
-2. **Codex subagent / child-thread linkage.** `inter_agent_communication_metadata` and `agent_message`
-   records exist; how a child rollout is referenced is not yet inspected.
-3. **Claude Code auto-memory default state.** Check the documentation for whether the `memory/` directory
-   is default-on or gated, and the exact scope of what `MEMORY.md` loads.
-4. **Codex memories default state.** This install has `memories = true` explicitly; confirm the default.
-5. **How Claude Code rebuilds the request** (slide 8 flowchart): which record types are replayed, and
-   whether attachments become context. Currently inferred from the records; confirm against documentation
-   or `--resume` behaviour.
-6. **recall-bench numbers.** Re-read the current submissions and pooled results; produce the single chart.
-7. **Reasoning-trace paper.** Re-read the abstract so the one-line claim on slide 10 matches what the paper shows.
-8. **Claude Code version drift.** Sessions here were written by 2.1.258–2.1.263 and the demo session by 2.1.218–2.1.220; re-check record shapes in November.
-9. **Sensitive data sweep** of every fixture, screenshot and export before committing them (no employer names,
-    hosts, home paths, tokens, emails).
+Claude Code 2.1.311–2.1.312 sessions, Codex 0.153.2 rollouts (no 0.163.0 rollout exists yet), structure only.
+
+| Claim | Result |
+| --- | --- |
+| Session layout, `tool-results/`, `subagents/`, `<persisted-output>`, `sourceToolAssistantUUID` | Confirmed |
+| `compact_boundary`, `logicalParentUuid`, `isCompactSummary`, `isVisibleInTranscriptOnly` | Confirmed; `compactMetadata` adds `preCompactDiscoveredTools` and `preservedMessages` |
+| Thinking stored as empty `thinking` + `signature` | Mostly: 202 of 209 blocks empty in 2.1.311, 3 of 15 carried a short text in 2.1.312. Slide 10 says "almost never" |
+| Record types | New: `api-request`, `api-request-blob`, `api-request-shape`, `permission-mode`, `tools-used`; `system` subtype `away_summary`. Not seen: `cost-state`, `local_command`, `thinking_stripped` |
+| Subagent sidecars | `agent-<id>.jsonl` plus `agent-<id>.meta.json` (`agentType`, `model`, `spawnDepth`, `toolUseId`, …); `forked-skill.json` not seen |
+| `usage` keys | All earlier keys present; adds `cache_creation`, `inference_geo`, `iterations`, `output_tokens_details`, `server_tool_use` |
+| Auto-memory frontmatter | `name`, `description`, `metadata{type, originSessionId, modified, node_type}` |
+| Codex envelope, `history_mode`, `reasoning.encrypted_content` | Confirmed; `compacted` adds `message`; new `token_usage_record` type |
+| Codex subagent linkage (item 2) | Child `session_meta` carries `parent_thread_id` and `source.subagent.thread_spawn{parent_thread_id, depth, agent_path, agent_role}`; the parent's `inter_agent_communication_metadata` is only `{trigger_turn}` |
+| Claude Code auto-memory default (item 3) | On by default in local sessions; the first 200 lines or 25 KB of `MEMORY.md` load at every session start, topic files on demand; per repository, shared across worktrees. <https://code.claude.com/docs/en/memory> |
+| Codex memories default (item 4) | Off by default; `memories = true` under `[features]`. <https://developers.openai.com/codex/memories> |
+| Request rebuild (item 5) | Documented: "Claude continues with the last compaction's summary, the messages that compaction left unsummarized, and every message since." <https://code.claude.com/docs/en/sessions>. Replay of attachments and reminders on resume is not documented |
+| Reasoning-trace paper (item 7) | Abstract: encrypted blocks are interchangeable within a provider and can be decoded; across Anthropic, OpenAI and Google; 315,320 public blocks yielded 367 PII artifacts and 182 credentials. Slide 10 reworded to match |
+| recall-bench (item 6) | Recomputed from submissions at `66dc060`; see `sources.md` and `assets/charts/recall-bench.csv` |
+
+## Still to verify before the talk
+
+1. **Pi full-text thinking with an Anthropic model.** Still only from the type definitions; the slide hedges it in the notes.
+   Pi 1.0.0 is installed here but has no 1.x sessions.
+2. **Claude Code version drift.** Re-check record shapes once more in the week of the talk.
+3. **Sensitive data sweep** of every screenshot and export before committing them.

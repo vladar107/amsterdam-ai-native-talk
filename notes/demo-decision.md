@@ -1,6 +1,50 @@
 # Opening demo: decision
 
-## Decision (2026-09-09)
+## Decision (2026-10-29): Audient iD14 mic mute, work laptop
+
+**Source: the Claude Code session "Audient id14 mkII Raycast integration" in `~/src` on the presentation laptop.**
+
+| | |
+| --- | --- |
+| Session id | `bdd809e6-a231-42a7-8c6f-aec2d256d14a` |
+| Project | `~/src`, Claude Code 2.1.247, `claude-fable-5` |
+| Dates | 2026-08-27 (first prompt) to 2026-08-28 (recommendation), three months before the talk |
+| Options turn | `9ebef932-53d4-4383-b544-0f6fc35ab2d5` |
+| Recommendation | `2b5b3b6a-b198-40f1-9155-dba7885bbdb2`, 2026-08-28T12:06:51Z; its thinking record is `a913a34d-18be-4eae-87ae-d9aadd435843`; `cwd` is `~/src/micbridge` |
+
+Question for the talk:
+
+> Did we ever work out how to toggle my Audient iD14 mic from Raycast? What options did we look at, what did we end up recommending, and when was that?
+
+What a correct answer contains:
+
+- The iD14 exposes no mute or volume controls to macOS, so Raycast's mic toggles cannot work.
+- The iD app's TCP control was explored; its Cut only mutes the monitor mix, not the signal the call receives.
+- A true global mute needs a virtual device plus an always-running router (BlackHole with LadioCast, or the
+  `micbridge` prototype). Rejected: no resident daemon.
+- Recommendation: per-app Raycast extensions (Teams, Zoom), `Cmd+D` in Meet, remove BlackHole and `micbridge`.
+- Dates 27 and 28 August 2026.
+
+Why it qualifies (checked 2026-10-29):
+
+- No `CLAUDE.md`, `AGENTS.md` or README in `~/src`; the `~/src` auto-memory index is empty; nothing in the dotfiles
+  repo, `~/.claude/CLAUDE.md` or `~/.agents` mentions the terms. `~/src/micbridge` was deleted on 2026-10-29,
+  as the session itself recommended.
+- Work terms in the session appear only in harness attachments (skill and MCP listings), never in user or assistant
+  records. The recommendation says "Work Mac" and names Microsoft Teams; no employer is named.
+- Rehearsed 2026-10-29: the agent loaded the history skill unprompted and answered correctly in 25 seconds
+  (full answer in `demo/fallback/README.md`).
+
+Isolation: `scripts/demo.sh` runs a second Claudescope over a copy of the nine sessions in `demo/corpus.txt`, so
+neither the search results nor the live UI can show work projects.
+
+Rejected alternatives on this laptop: the security-audit plugin design (6 Oct; a design, not a verdict, and only
+seven weeks old), the home-assistant browser sidecar (household infrastructure), the NAS RAM upgrade (three days old,
+marketplace sellers), and the dotfiles sessions (work content close to every decision).
+
+## Superseded decision (2026-09-09): preserve deleted sessions, personal machine
+
+The source session exists only on the personal machine; the talk is presented from the work laptop.
 
 **Source: the Claude Code session "Persist agent memory across deletions" in the Claudescope repository.**
 
@@ -59,8 +103,6 @@ Rejected alternatives:
 
 ## Open items
 
-- Rehearse the exact question in a fresh Claude Code session in the Claudescope repository. Watch whether the
-  agent reaches for the history search on its own or stops at what CLAUDE.md says about pruning; if it stops,
-  add "check our session history" to the prompt.
-- Produce `assets/screenshots/demo-answer.png`, `claudescope-session.png`, and `demo/fallback/demo-run.mp4`
-  from that rehearsal.
+- Rehearse once interactively with `scripts/demo.sh claude` on the projector and the venue network; the
+  2026-10-29 rehearsal was non-interactive (`claude -p`).
+- Record `demo/fallback/demo-run.mp4` from that rehearsal.
