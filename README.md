@@ -24,8 +24,8 @@ pinned as a dev dependency so the presentation does not depend on whatever `npx 
 | `prototypes/` | Three-slide visual prototype and its renders in the candidate themes. |
 | `assets/` | Screenshots, diagrams and charts referenced from the deck. Placeholders are labelled as such. |
 | `demo/` | Opening-demo plan, synthetic fixtures modelled on real session formats, and fallback material. |
-| `notes/` | Working documents: timing, verification list, demo decision. |
-| `scripts/` | PDF/HTML export and prototype rendering through the local Deckrun server. |
+| `notes/` | Working documents: talk track, timing, verification list, demo decision, countdown to the talk. |
+| `scripts/` | PDF/HTML export, prototype rendering, the recall-bench chart, and the demo stage setup (`demo.sh`). |
 | `sources.md` | Every external claim and third-party visual, with its source. |
 
 ## Run
@@ -38,6 +38,8 @@ npm run lint       # deckrun lint over the deck and the prototype
 npm run export     # exports/deck.pdf and exports/deck.html (needs Chrome/Chromium/Edge/Brave)
 npm run proto      # renders prototypes/prototype.md in the candidate themes to prototypes/renders/
 npm run qr         # regenerates the QR codes for the closing slide (assets/qr/)
+npm run chart      # regenerates assets/charts/recall-bench.svg from its CSV
+npm run demo -- prepare|check|claude|open|stop   # isolated stage setup for the opening demo
 ```
 
 Theme, template and transition are set in `package.json` scripts and can be overridden for exports with
@@ -55,11 +57,15 @@ Theme, template and transition are set in `package.json` scripts and can be over
 
 ## Presentation day
 
-- Present from the browser with `npm run present`; keep Terminal, Claude Code and Claudescope in separate windows.
+The talk is presented from the work laptop. The opening demo therefore runs against an isolated copy of nine
+personal sessions, never against the machine's full history (see `demo/README.md` for the checklist).
+
+- `npm run demo -- prepare` before the talk; it must end with `✓ demo index: …` and lists what it copied.
+- Present from a separate Chrome profile with `npm run present`; keep Terminal (Claude Code started with
+  `npm run demo -- claude`) and Claudescope (`npm run demo -- open`, port 4318) in separate windows.
 - Export a fresh `exports/deck.pdf` after every stable revision; it is the strongest offline fallback.
   The standalone HTML export still loads fonts, highlighting, KaTeX and Mermaid from CDNs.
-- The recorded-answer fallback is the last slide, reached with `End`. Return with `O` (overview) and a click.
-  Claudescope is shown live in its own browser window; the screenshot on the slide is the fallback.
-- Deckrun's pixel pets are hidden by a `<style>` block on the title slide, which also adds a small fixed footer.
-- The reconstruction slide embeds the local Claudescope UI in an iframe (`http://127.0.0.1:4317/sessions/939387c7-8a25-4e80-9b7c-6106932bbe6d`), so
-  `claudescope start` must be running before the deck opens. The screenshot in `assets/screenshots/` is the fallback.
+- Live moments are marked on the slides (`● live`): Claude Code on slide 2, the terminal on slide 4, Claudescope
+  on slides 5, 7 and 12. Each slide also carries the same content statically, so a failed switch costs nothing.
+- The design lives in `assets/talk.css`, linked from the title slide: a token override of Deckrun's theme variables
+  (dark by default, light under `--theme paper`), vertically centred slides, and Deckrun's cursor and pets hidden.
