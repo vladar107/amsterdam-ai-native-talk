@@ -2,3 +2,8 @@ node_modules/
 exports/
 .DS_Store
 *.log
+
+# Speaker-only material: talk script, cue sheet, live demo setup
+notes/
+demo/
+scripts/demo.sh

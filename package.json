@@ -5,13 +5,12 @@
   "scripts": {
     "dev": "deckrun slides.md --theme paper --template minimal --transition fade --size l",
     "present": "deckrun slides.md --theme paper --template minimal --transition fade --size l --fullscreen",
-    "lint": "deckrun lint slides.md prototypes/prototype.md",
+    "notes": "deckrun --theme paper --template minimal --transition fade --size l",
+    "lint": "deckrun lint slides.md",
     "check": "deckrun lint slides.md --format json",
     "export": "scripts/export.sh slides.md exports/deck",
-    "proto": "scripts/render-prototypes.sh",
     "qr": "scripts/make-qr.sh",
-    "chart": "node scripts/make-chart.mjs",
-    "demo": "scripts/demo.sh"
+    "chart": "node scripts/make-chart.mjs"
   },
   "devDependencies": {
     "deckrun": "1.6.0",
