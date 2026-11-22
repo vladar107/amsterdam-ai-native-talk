@@ -7,7 +7,10 @@
 
 <div class="byline"><span>Vladislav Ramazaev</span><span>AI Native Amsterdam · 25 November 2026</span></div>
 
-<!-- notes: [0:30 · running 0:30] No agenda, no bio. One sentence: "I want to start by asking my coding agent about work I did months ago." Then switch to the terminal. -->
+<!-- notes: [0:30 · running 0:30]
+No agenda, no bio.
+SAY: "I want to start by asking my coding agent about work I did months ago."
+GO TO: the Claude Code window. -->
 
 ---
 
@@ -17,7 +20,13 @@
 
 <div class="live">live · Claude Code</div>
 
-<!-- notes: [2:30 · running 3:00] LIVE DEMO. Announce, do not show, the question: "Three months ago I spent an evening trying to get a mute button for my audio interface. Let's ask my agent what came of it." Switch to the prepared Claude Code window (started with scripts/demo.sh claude, cwd ~/src) and paste the prompt from the clipboard: "Did we ever work out how to toggle my Audient iD14 mic from Raycast? What options did we look at, what did we end up recommending, and when was that?" While it runs (about 30 seconds): "Fresh session. Nothing in this folder contains the answer." Expected answer: the iD14 exposes no mute or volume controls to macOS, so Raycast's mic toggles cannot work; the iD mixer's Cut only mutes the monitor mix; a true global mute needs a virtual device plus a router that always runs (BlackHole with LadioCast, or the micbridge prototype), which I rejected; so the recommendation was per-app: the Teams and Zoom Raycast extensions, Cmd+D in Meet. Dates 27 and 28 August 2026, session bdd809e6. Point at the tool calls scrolling past: the history skill, claudescope search, claudescope session. If the demo fails: say what it would have found (the four bullets above), then move on to slide 3; slides 4 and 5 still show the real record. If the agent starts searching files instead, say "check our session history". -->
+<!-- notes: [2:30 · running 3:00] LIVE · Claude Code window (scripts/demo.sh claude)
+SAY: "Three months ago I spent an evening trying to get a mute button for my audio interface. Let's ask my agent what came of it."
+DO: paste question 1 from the clipboard: "Did we ever work out how to toggle my Audient iD14 mic from Raycast? What options did we look at, what did we end up recommending, and when was that?"
+WHILE IT RUNS: "Fresh session. Nothing in this folder contains the answer." Point at the tool calls: history skill, claudescope search, claudescope session.
+EXPECT: no mute control on the device · the mixer's Cut only mutes the headphones · a virtual router needs a background process, rejected · so mute per app (Teams, Zoom, Cmd+D in Meet) · 27 and 28 August.
+IF IT SEARCHES FILES: type "check our session history".
+IF IT FAILS: say the four points yourself and go on. -->
 
 ---
 
@@ -31,7 +40,10 @@
 
 **Having the history is not the same as remembering it.**
 
-<!-- notes: [1:30 · running 4:30] The whole talk is this distinction. The agent did not remember; it had a tool that could search its own past and used it. Next: what is actually in that file. -->
+<!-- notes: [1:30 · running 4:30]
+TOPIC: remember or retrieve. The whole talk is this distinction.
+SAY: it did not remember. It had a tool that searches its own past, and it used it.
+NEXT: what is actually in that file. -->
 
 ---
 
@@ -57,7 +69,11 @@
 - **`timestamp`, `cwd`**: provenance travels with the decision; that folder is gone, the record is not
 - **`thinking` is empty**; only the `signature` is on disk
 
-<!-- notes: [2:00 · running 6:30] LIVE, real files first, in the terminal: ls ~/.claude/projects, then ls -lh the bdd809e6 file inside the -src folder (one file, one session), then grep 2b5b3b6a <file> | head -c 1500 to show one unreadable line, then jq it (commands in demo/README.md). Come back to this slide to explain the three fields. Real records from the demo session, Claude Code 2.1.247; cwd shortened, ids and text truncated. Fields not on the slide (sessionId, gitBranch, usage, model, version, requestId) are on every record too; mention them only if asked. -->
+<!-- notes: [2:00 · running 6:30] LIVE · terminal (commands in demo/README.md)
+DO: ls ~/.claude/projects · ls -lh the bdd809e6 file · grep one line · the same line through jq.
+SAY: one file, one session. One line, unreadable. The same line, readable.
+BACK TO THE SLIDE: three fields. parentUuid: a tree, not a list. thinking: empty text plus a signature. cwd and timestamp on every record.
+Other fields only if asked. -->
 
 ---
 
@@ -72,7 +88,10 @@
 - Tokens and cost **per turn**
 - Search across every indexed session
 
-<!-- notes: [2:00 · running 8:30] LIVE: switch to the Claudescope browser window already open on this session (scripts/demo.sh open, http://127.0.0.1:4318/sessions/bdd809e6-a231-42a7-8c6f-aec2d256d14a). It is the isolated demo instance: nine personal sessions, no work projects. Scroll to the last turn, the recommendation. The slide is the fallback. Instrument, not subject: "a viewer I built to read these files; the point is that the file was readable all along, just not by humans." -->
+<!-- notes: [2:00 · running 8:30] LIVE · Claudescope (scripts/demo.sh open)
+DO: scroll to the last turn, the recommendation.
+SAY: "A viewer I built to read these files. The file was readable all along, just not by humans."
+The slide is the fallback. -->
 
 ---
 
@@ -88,7 +107,11 @@
 
 In one real 6,682-record session, **about a third** was conversation.
 
-<!-- notes: [2:30 · running 11:00] One investigation: what must be preserved to reconstruct a useful session? Two surprises: tool results arrive as user messages, and the transcript is not self-contained: the 40 KB the agent read is in a sidecar file. Subagents have their own transcripts under <session-id>/subagents/; mention only if asked. Frame for the mixed audience before the table: "You do not need to remember the formats, only three facts: the transcript is more complete than the chat, context is rebuilt, compaction removes context but not history." The next two slides are those facts. -->
+<!-- notes: [2:30 · running 11:00]
+TOPIC: what must be kept to rebuild a session.
+SAY FIRST: "You don't need to remember the formats, only three facts: the transcript is more complete than the chat, context is rebuilt, compaction removes context but not history."
+TWO SURPRISES: tool results arrive as user messages · the 40 KB the agent read sits in a sidecar file, not in the transcript.
+Subagent transcripts only if asked. -->
 
 ---
 
@@ -111,7 +134,10 @@ In one real 6,682-record session, **about a third** was conversation.
 - The summary arrives as a **`user` message**; the model reads it, it did not write it for itself
 - The parent chain is cut; `logicalParentUuid` remembers where it was. **Everything before it is still on disk.**
 
-<!-- notes: [2:00 · running 13:00] LIVE in Claudescope: `npm run demo -- open compaction`, the summary turn of a manual /compact (90,283 → 25,942 tokens, 39 s), then the last turn, answered from the summary. Then back here: the numbers on the slide are from a bigger, automatic compaction. Real numbers from one auto-compaction (Claude Code 2.1.25x). "Nothing before this line is in the model's context anymore, except what the summary chose to keep. All of it is still in the file." -->
+<!-- notes: [2:00 · running 13:00] LIVE · Claudescope (scripts/demo.sh open compaction)
+DO: the summary turn of a manual /compact (90,283 → 25,942 tokens, 39 s), then the last turn, answered from the summary.
+BACK TO THE SLIDE: these numbers are from a bigger, automatic compaction.
+SAY: "Nothing before this line is in the model's context anymore, except what the summary chose to keep. All of it is still in the file." -->
 
 ---
 
@@ -130,11 +156,16 @@ session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary
 
 *Documented: "the last compaction's summary, the messages that compaction left unsummarized, and every message since." Simplified diagram.*
 
-<!-- notes: [1:30 · running 14:30] Bridge to memory. The same records feed both "what the model sees now" and "what can be searched later". Memory enters on a separate path; the rest of the talk is about what should be allowed onto it. The compaction cut is documented (code.claude.com/docs/en/sessions); whether attachments and reminders are replayed on resume is not, so if asked: "not documented, and I would not rely on it". -->
+<!-- notes: [1:30 · running 14:30]
+TOPIC: the bridge to memory.
+SAY: the same records feed "what the model sees now" and "what can be searched later". Memory enters on a separate path. The rest of the talk is about what belongs on it.
+IF ASKED whether attachments are replayed on resume: "not documented, and I would not rely on it". -->
 
 ---
 
 ## Codex and Pi, where they differ
+
+<div class="live">live · Pi · Claudescope</div>
 
 | Question | Claude Code | Codex CLI | Pi |
 | --- | --- | --- | --- |
@@ -142,7 +173,14 @@ session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary
 | **What reasoning state remains?** | Signed opaque state, empty `thinking` | Encrypted opaque state, `encrypted_content` | Plaintext `thinking`, optional `thinkingSignature` |
 | **How is earlier context replaced?** | `compact_boundary` + summary message | `compacted` with `replacement_history` | `compaction` entry: `summary`, `firstKeptEntryId` |
 
-<!-- notes: [2:00 · running 16:30] Three questions, one slide. Codex: a turn is spread across several rollout items and the reasoning is an opaque encrypted blob. Pi: threaded records; keeps whatever thinking text the provider returns on disk next to the provider signature, and a compaction entry that names the first kept record (observed in a pi 0.85.1 session: with the OpenAI provider the thinking field held the reasoning summary and the opaque state sat in thinkingSignature; the full-text case with an Anthropic model is still from the type definitions only). Do not tour the formats. -->
+<!-- notes: [3:30 · running 18:00] LIVE · Pi window (scripts/demo.sh pi), then Claudescope (scripts/demo.sh open agents)
+DO: paste question 2 into Pi: "check our session history with claudescope: why is kitty remote control socket-only in my config and not just yes? what else did we look at back then, and when was that?"
+WHILE IT RUNS: Claudescope, one project, the same five prompts in Claude Code, Codex and Pi. Say that it is staged. Open the Pi session, scroll to "Context compacted".
+DO NOT open the Codex session.
+EXPECT IN PI: a review tool needed a kitty overlay, which needs remote control over a socket · socket-only gives that and still rejects escape codes · 11 August.
+SAY: "That decision was made in Claude Code. Pi just read the record."
+BACK TO THE SLIDE: Codex: a turn is spread over several items, reasoning is an encrypted blob. Pi: threaded records, thinking text plus signature on disk, a compaction entry that names the first kept record. No format tour.
+IF BEHIND: skip the Pi question, show Claudescope only. -->
 
 ---
 
@@ -159,7 +197,11 @@ Four things that are not the same:
 - A 2026 paper decoded encrypted reasoning blocks from public session logs: **367 PII artifacts and 182 credentials** from 315k blocks (arXiv 2608.09867)
 - **Encryption is not sanitisation. Strip opaque blocks before sharing a transcript.**
 
-<!-- notes: [2:00 · running 18:30] Two minutes, no more. The paper is a pointer, not a topic: they fed the encrypted blocks back into a weaker model from the same provider, across Anthropic, OpenAI and Google, and read the reasoning out. Do not explain the method beyond that sentence. "Almost never 3": recent Claude Code versions occasionally keep a short thinking text (a few of hundreds of blocks); the signature is always there. If asked about Pi: in the recorded session it kept 2 and 4, the summary and the opaque state, because that is what the OpenAI provider returns. Then straight to memory. -->
+<!-- notes: [2:00 · running 20:00]
+Two minutes, no more.
+SAY: the paper is a pointer. They fed the encrypted blocks back into a weaker model from the same provider and read the reasoning out. Anthropic, OpenAI and Google.
+"Almost never 3": Claude Code rarely keeps thinking text; the signature is always there.
+NEXT: straight to memory. -->
 
 ---
 
@@ -174,7 +216,9 @@ Four things that are not the same:
 
 The demo answer came from the **third row**. Most "give the agent memory" work targets the **fourth**.
 
-<!-- notes: [2:00 · running 20:30] Two explicit columns: next turn and new session. The stored transcript is the only row that is complete and the only row that needs an action to reach. -->
+<!-- notes: [2:00 · running 22:00]
+TOPIC: two columns, next turn and new session.
+SAY: the stored transcript is the only row that is complete, and the only row that needs an action to reach. -->
 
 ---
 
@@ -203,7 +247,11 @@ metadata:
 
 **`originSessionId` leads back to the session. Whether anything reads it is another matter.**
 
-<!-- notes: [2:00 · running 22:30] LIVE in Claudescope: Memory page, project amsterdam-ai-native-talk, open stage-demo-isolation. Real file: Claude Code wrote it on 2026-10-29 in the session that built this deck; the harness stamped originSessionId, node_type and modified. Point at originSessionId, then say you will not open that session: it is full of your day job. "Provenance points somewhere, but not always somewhere you can show." It also carries an expiry, the 25th of November; that is rule four on slide 15. Codex notes carry the same idea as scope, applies_to and rollout_path. Real file shapes; the fact on the slide is the real file, trimmed. Provenance is what makes the rest possible: you can go from a memory fact back to the session that produced it. Pi has no home-directory memory store as far as inspected. Frontmatter delimiters omitted because Deckrun splits slides on them. -->
+<!-- notes: [2:00 · running 24:00] LIVE · Claudescope (scripts/demo.sh open memory)
+DO: project amsterdam-ai-native-talk, open stage-demo-isolation.
+SAY: Claude Code wrote this on 29 October while we built this deck. Point at originSessionId. "I won't open that session, it's full of my day job. Provenance points somewhere, but not always somewhere you can show."
+It carries an expiry, 25 November: that is rule four on slide 15.
+Codex notes: scope, applies_to, rollout_path. Pi: no memory store. -->
 
 ---
 
@@ -218,7 +266,10 @@ metadata:
 
 > A transcript has more knowledge. A memory file has more influence.
 
-<!-- notes: [1:30 · running 24:00] The key sentence of the talk. Compare the two sizes: a million tokens nobody rereads versus a few hundred tokens everybody rereads. Facts if asked: Claude Code auto-memory is on by default in local sessions; the first 200 lines or 25 KB of MEMORY.md load at every session start, and topic files are read on demand (code.claude.com/docs/en/memory). Codex memories are off by default and enabled with memories = true under [features]. -->
+<!-- notes: [1:30 · running 25:30]
+The key sentence of the talk.
+SAY: a million tokens nobody rereads, against a few hundred tokens everybody rereads.
+IF ASKED: Claude Code auto-memory is on by default; the first 200 lines or 25 KB of MEMORY.md load at every session start. Codex memories are off by default. -->
 
 ---
 
@@ -238,7 +289,10 @@ metadata:
 
 *The observation was true. The scope was lost.*
 
-<!-- notes: [3:00 · running 27:00] Non-adversarial on purpose. Nobody attacked anything. Other examples if asked: "The API is unavailable, use a mock", "Disable this validation in development", "Never edit this generated file", "Use this absolute path". Each was correct once. -->
+<!-- notes: [3:00 · running 28:30]
+TOPIC: nobody attacked anything. Walk the five steps.
+END ON: "The observation was true. The scope was lost."
+MORE EXAMPLES IF ASKED: "The API is unavailable, use a mock" · "Disable this validation in development" · "Use this absolute path". Each was correct once. -->
 
 ---
 
@@ -253,23 +307,32 @@ metadata:
 
 > The more automatically information enters context, the stronger its evidence and scope must be.
 
-<!-- notes: [2:00 · running 29:00] The blockquote is the central rule; everything above it is a consequence. -->
+<!-- notes: [2:00 · running 30:30]
+SAY: the blockquote is the rule. Everything above it follows from it.
+Rule four, the expiry: the memory file you just saw had one. -->
 
 ---
 
 ## Retrieve the history instead of memorising the conclusion
 
-![Indexed retrieval versus raw-file search: time, cost, accuracy](assets/charts/recall-bench.svg "right")
+![Raw transcript search versus an index over MCP or a skill: time, cost and correct answers per question](assets/charts/recall-bench.svg "right")
 
 - **Resume** a known session
 - **Grep** the raw transcripts
 - **Index** once, search the index
-- Expose history through **MCP**
+- Expose retrieval through **MCP or a skill**
 - Teach the agent **when** to look back
 
-**Indexing cut retrieval effort on every corpus. The accuracy gain shrank once more corpora came in.**
+**The index answers in half the time. It is not clearly more accurate.**
 
-<!-- notes: [3:00 · running 32:00] One chart, one result, one caveat. Read the top panel: on every corpus, raw search took more than twice as long and cost about twice as much. Then the bottom: the pilot's +9 points shrank to about +2 pooled, and that interval crosses zero. Say it plainly: "Indexing makes retrieval cheaper. I cannot show it makes it more accurate." Disclose: "I wrote both the benchmark and the indexer." If asked: 3 corpora, 87 questions, 229 runs per arm; one pooled corpus is the pilot's own machine; the largest per-category gain was multi-session synthesis, +7 pp, still not clearly above zero. Figures computed from recall-bench submissions at commit 66dc060 (assets/charts/recall-bench.csv). -->
+<!-- notes: [3:00 · running 33:30]
+SAY: back at the opening. It did not memorise my decision, it retrieved it.
+WAYS: resume · grep · index · MCP or a skill · teach the agent when to look back. "In the first demo that was a skill. In the second one, it was me."
+CHART: three questions, the same three bars each time. Time: 62 s against 27 and 30. Cost: 24 cents against 13 and 20, so 45% cheaper through MCP, 15% through the skill. Correct: 93% against 95 and 95, inside the noise.
+SAY: "The index makes retrieval faster and cheaper. I can't show it makes it more accurate."
+DISCLOSE: "I wrote both the benchmark and the indexer."
+MODEL: Claude Sonnet 5 as the agent, Claude Opus 4.8 as the blind judge.
+IF ASKED: 3 machines, 87 questions, 229 runs per approach. Accuracy +2.3 points, interval −1.1 to +6.3. An earlier one-machine pilot showed +9. -->
 
 ---
 
@@ -292,5 +355,7 @@ metadata:
   </figure>
 </div>
 
-<!-- notes: [2:00 · running 34:00] Return to the opening answer: the agent did not remember, it retrieved, and the record was good enough to retrieve from. Closing line, then questions. Left QR: the repo README carries every link (deck PDF, Claudescope, recall-bench, Linktree, sources). -->
+<!-- notes: [2:00 · running 35:30]
+SAY: the agent did not remember, it retrieved, and the record was good enough to retrieve from.
+Read the blockquote. Left QR: the repository, with every link. Then questions. -->
 

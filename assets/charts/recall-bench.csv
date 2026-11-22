@@ -1,7 +1,10 @@
-condition,metric,value,low,high,label
-raw_over_indexed,latency_ratio,2.94,2.35,3.83,pilot
-raw_over_indexed,cost_ratio,2.26,1.89,2.79,pilot
-diff_indexed_minus_raw,accuracy_pp,8.9,0.8,17.5,pilot
-raw_over_indexed,latency_ratio,2.35,1.88,3.01,pooled
-raw_over_indexed,cost_ratio,1.82,1.47,2.51,pooled
-diff_indexed_minus_raw,accuracy_pp,2.3,-1.1,6.3,pooled
+approach,metric,value
+raw,seconds,62.2
+mcp,seconds,26.5
+skill,seconds,29.5
+raw,usd,0.2378
+mcp,usd,0.1305
+skill,usd,0.2012
+raw,correct_pct,92.9
+mcp,correct_pct,95.2
+skill,correct_pct,95.4

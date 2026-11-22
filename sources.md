@@ -13,7 +13,7 @@ Format claims were verified locally against the versions listed; formats change,
 | Codex memory store: `~/.codex/memories/MEMORY.md` (scope, applies_to), `raw_memories.md` (per thread with `rollout_path`), `rollout_summaries/` | codex-cli 0.147.0–0.153.2 with `memories = true` in `config.toml` | Off by default, enabled under `[features]` (<https://developers.openai.com/codex/memories>). |
 | Pi session header (`type: session`, `version: 3`), threaded `id`/`parentId` records, `model_change`, `thinking_level_change` | pi 0.84.3, one small session under `~/.pi/agent/sessions/` | Observed. |
 | Pi `toolResult` role, plaintext `thinking` with optional `thinkingSignature`, `compaction` entry with `summary`, `firstKeptEntryId`, `tokensBefore` | `@earendil-works/pi-coding-agent` 0.85.1: `dist/core/session-manager.d.ts`, `docs/session-format.md`, `docs/compaction.md`, `pi-ai/dist/types.d.ts` | Observed on 2026-09-15 in a 91-record pi 0.85.1 session (OpenAI provider): `thinking` held the reasoning summary, `thinkingSignature` the opaque state; the compaction record also carries `details{readFiles,modifiedFiles}`, `usage` and `fromHook`. |
-| Demo session records on the raw-record slide | Claude Code 2.1.247, session `bdd809e6-a231-42a7-8c6f-aec2d256d14a` in `~/src`, 2026-08-27 to 2026-08-28 | Ids and text truncated and `cwd` shortened on the slide; see notes/demo-decision.md. |
+| Demo session records on the raw-record slide | Claude Code 2.1.247, session `bdd809e6-a231-42a7-8c6f-aec2d256d14a` in `~/src`, 2026-08-27 to 2026-08-28 | Ids and text truncated and `cwd` shortened on the slide. |
 
 ## Repositories and documentation
 
@@ -41,6 +41,9 @@ machine-level and question-level cluster bootstrap, 5,000 draws. Chart data: `as
   [2.35, 3.83] (the README's 2.8× is the median ratio); raw cost 2.26× as much [1.89, 2.79].
 - Pooled, three corpora (`76e5ed2a991d`, `88644446d28c`, `f30508862c36`): 87 questions, 229 runs per arm.
   Accuracy +2.3 pp [−1.1, +6.3]; time 2.35× [1.88, 3.01]; cost 1.82× [1.47, 2.51].
+- Chart on the retrieval slide, pooled per-question means: raw files 62.2 s, $0.238, 92.9% correct; index over MCP
+  26.5 s, $0.131, 95.2%; index over a skill 29.5 s, $0.201, 95.4%. "Indexed" in the ratios above is the MCP arm.
+  Cost against raw files: −45% over MCP, −15% over the skill. Agent model `claude-sonnet-5`, judge `claude-opus-4-8`.
 - Effort fell on every corpus (time ratio 1.91–2.63, cost ratio 1.50–2.51). One pooled corpus is the pilot's machine.
 - By task type (pooled), the largest accuracy gain is multi-session synthesis, +7.1 pp [0.0, +16.7]; every category's
   interval touches or crosses zero.
