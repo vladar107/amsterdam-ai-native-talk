@@ -28,7 +28,7 @@ npm run notes      # Deckrun's editor: drop slides.md onto it and press Cmd+Ente
 npm run lint       # deckrun lint
 npm run export     # exports/deck.pdf and exports/deck.html (needs Chrome, Chromium, Edge or Brave)
 npm run chart      # regenerates the recall-bench chart from assets/charts/recall-bench.csv
-npm run qr         # regenerates the QR codes on the closing slide
+npm run qr         # regenerates the QR code on the closing slide
 ```
 
 ## Layout

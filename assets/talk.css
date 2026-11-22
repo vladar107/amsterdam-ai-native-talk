@@ -185,3 +185,6 @@ html[data-theme] .live::before {
 @media print {
   html[data-theme] .slide { justify-content: center !important; }
 }
+
+/* Inline SVG diagrams sit on the same card as code blocks. */
+html[data-theme] .flow { background: var(--mantle); border: 1px solid var(--hairline); border-radius: 10px; padding: 0.5rem 1rem; margin: 0.25rem 0 0.75rem; }

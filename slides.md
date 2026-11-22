@@ -143,12 +143,7 @@ SAY: "Nothing before this line is in the model's context anymore, except what th
 
 ## How the next request is rebuilt
 
-```text
-session.jsonl ──▶ drop housekeeping ──▶ cut at last compact_boundary ──▶ messages[] ──▶ model request
-      ▲                                                                       ▲              │
-      │                       instructions + memory + skills ─────────────────┘              │
-      └────────────────────── new records appended ◀────────────────────────────────────────┘
-```
+<div class="flow"><svg viewBox="0 0 1110 200" role="img" aria-label="The session file is filtered, cut at the last compaction boundary and turned into the message list for the model request; instructions, memory and skills join that list on a separate path; new records are appended back to the session file" style="display:block; width:100%; height:auto; font-family:var(--font-mono); font-size:16px;"><rect x="12" y="20" width="150" height="50" rx="8" fill="none" stroke="var(--text)" stroke-width="1.5"/><text x="87" y="51" text-anchor="middle" fill="var(--text)">session.jsonl</text><rect x="202" y="20" width="195" height="50" rx="8" fill="none" stroke="var(--text)" stroke-width="1.5"/><text x="299.5" y="51" text-anchor="middle" fill="var(--text)">drop housekeeping</text><rect x="437" y="20" width="305" height="50" rx="8" fill="none" stroke="var(--text)" stroke-width="1.5"/><text x="589.5" y="51" text-anchor="middle" fill="var(--text)">cut at last compact_boundary</text><rect x="782" y="20" width="125" height="50" rx="8" fill="none" stroke="var(--text)" stroke-width="1.5"/><text x="844.5" y="51" text-anchor="middle" fill="var(--text)">messages[]</text><rect x="947" y="20" width="150" height="50" rx="8" fill="none" stroke="var(--text)" stroke-width="1.5"/><text x="1022" y="51" text-anchor="middle" fill="var(--text)">model request</text><path d="M166,45 H190" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M199,45 l-10,-5.5 v11 z" fill="var(--text)"/><path d="M401,45 H425" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M434,45 l-10,-5.5 v11 z" fill="var(--text)"/><path d="M746,45 H770" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M779,45 l-10,-5.5 v11 z" fill="var(--text)"/><path d="M911,45 H935" stroke="var(--text)" stroke-width="1.5" fill="none"/><path d="M944,45 l-10,-5.5 v11 z" fill="var(--text)"/><rect x="437" y="98" width="305" height="50" rx="8" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/><text x="589.5" y="129" text-anchor="middle" fill="var(--text)">instructions + memory + skills</text><path d="M746,123 H844.5 V84" stroke="var(--accent)" stroke-width="1.5" fill="none"/><path d="M844.5,73 l-5.5,10 h11 z" fill="var(--accent)"/><path d="M1022,74 V172 H87 V84" stroke="var(--text)" stroke-width="1.5" fill="none" stroke-dasharray="6 5"/><path d="M87,73 l-5.5,10 h11 z" fill="var(--text)"/><rect x="120" y="158" width="230" height="28" fill="var(--mantle)"/><text x="235" y="178" text-anchor="middle" fill="var(--text)">new records appended</text></svg></div>
 
 - The stored session is the **durable record** a resumed context is rebuilt from
 - Instruction and memory files enter on a **separate path**, under their own scope and loading rules
@@ -344,18 +339,28 @@ IF ASKED: 3 machines, 87 questions, 229 runs per approach. Accuracy +2.3 points,
 
 > Before building more memory for your coding agent, inspect what it already stores, review what it keeps injecting into context, and make the rest safely searchable.
 
-<div style="display:flex; justify-content:center; gap:5rem; margin-top:1rem;">
+<!-- notes: [2:00 · running 35:30]
+SAY: the agent did not remember, it retrieved, and the record was good enough to retrieve from.
+Read the blockquote. Then the next slide. -->
+
+---
+
+## Thank you
+
+<div style="display:flex; align-items:center; gap:4rem; margin-top:1.5rem;">
+  <div style="flex:1; line-height:2; font-size:1.35rem;">
+    <strong>Vladislav Ramazaev</strong><br>
+    <span style="opacity:0.75;">Claudescope</span> · <a href="https://claudescope.ramazaev.dev" style="color:inherit; border-bottom:none; background:none; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:0.2em;">claudescope.ramazaev.dev</a><br>
+    <span style="opacity:0.75;">recall-bench</span> · <a href="https://github.com/vladar107/recall-bench" style="color:inherit; border-bottom:none; background:none; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:0.2em;">github.com/vladar107/recall-bench</a><br>
+    <span style="opacity:0.75;">LinkedIn</span> · <a href="https://www.linkedin.com/in/vladar107" style="color:inherit; border-bottom:none; background:none; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:0.2em;">linkedin.com/in/vladar107</a><br>
+    <span style="opacity:0.75;">Site</span> · <a href="https://ramazaev.dev" style="color:inherit; border-bottom:none; background:none; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:0.2em;">ramazaev.dev</a>
+  </div>
   <figure style="margin:0; text-align:center;">
-    <img src="assets/qr/repo.png" alt="QR code: this talk's repository with the deck and all links" style="width:9.5rem; max-width:100%; border-radius:0.5rem;">
-    <figcaption style="font-size:0.8rem; opacity:0.75;">deck, sources, tools</figcaption>
-  </figure>
-  <figure style="margin:0; text-align:center;">
-    <img src="assets/qr/linkedin.png" alt="QR code: LinkedIn profile" style="width:9.5rem; max-width:100%; border-radius:0.5rem;">
-    <figcaption style="font-size:0.8rem; opacity:0.75;">linkedin.com/in/vladar107</figcaption>
+    <img src="assets/qr/repo.png" alt="QR code: this talk's repository with the slides, sources and links" style="width:17rem; max-width:100%; border-radius:0.5rem;">
+    <figcaption style="font-size:1.05rem; margin-top:0.5rem;"><strong>Slides, sources, links</strong><br><a href="https://github.com/vladar107/amsterdam-ai-native-talk" style="color:inherit; border-bottom:none; background:none; text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:0.2em;">github.com/vladar107/amsterdam-ai-native-talk</a></figcaption>
   </figure>
 </div>
 
-<!-- notes: [2:00 · running 35:30]
-SAY: the agent did not remember, it retrieved, and the record was good enough to retrieve from.
-Read the blockquote. Left QR: the repository, with every link. Then questions. -->
-
+<!-- notes: [stays up during questions]
+SAY: "Thank you. The code takes you to the slides, the sources and every link. Questions?"
+Leave this slide on for the whole Q&A. -->
