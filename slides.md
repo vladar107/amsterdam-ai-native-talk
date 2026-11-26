@@ -8,9 +8,9 @@
 <div class="byline"><span>Vladislav Ramazaev</span><span>AI Native Amsterdam · 25 November 2026</span></div>
 
 <!-- notes: [0:30 · running 0:30]
-No agenda, no bio.
-SAY: "I want to start by asking my coding agent about work I did months ago."
-GO TO: the Claude Code window. -->
+Hi everyone. I'm Vlad. I write software for a living. For the last year, I've written most of it together with coding agents. 
+And as all you I have a tendency to forget things. 
+-->
 
 ---
 
@@ -20,13 +20,12 @@ GO TO: the Claude Code window. -->
 
 <div class="live">live · Claude Code</div>
 
-<!-- notes: [2:30 · running 3:00] LIVE · Claude Code window (scripts/demo.sh claude)
-SAY: "Three months ago I spent an evening trying to get a mute button for my audio interface. Let's ask my agent what came of it."
-DO: paste question 1 from the clipboard: "Did we ever work out how to toggle my Audient iD14 mic from Raycast? What options did we look at, what did we end up recommending, and when was that?"
-WHILE IT RUNS: "Fresh session. Nothing in this folder contains the answer." Point at the tool calls: history skill, claudescope search, claudescope session.
-EXPECT: no mute control on the device · the mixer's Cut only mutes the headphones · a virtual router needs a background process, rejected · so mute per app (Teams, Zoom, Cmd+D in Meet) · 27 and 28 August.
-IF IT SEARCHES FILES: type "check our session history".
-IF IT FAILS: say the four points yourself and go on. -->
+<!-- notes: [2:30 · running 3:00] LIVE · Claude Code window
+SAY: "TThree months ago, in August, I spent an evening on a small problem. I have an audio interface on my desk. And I wanted a mute button for its microphone in Raycast. One hotkey, mic off. I don't remember how it finished, so let's ask the agent"
+DO: "Did we ever work out how to toggle my Audient iD14 mic from Raycast? What options did we look at, what did we end up recommending, and when was that?"
+WHILE IT RUNS: This is Claude Code, and this is a fresh session. I did not resume anything. There is no history in this window.
+It is running in my `src` folder. There is no `CLAUDE.md` here, no notes, and the agent's memory for this folder is empty.
+EXPECT: Watch what it does. It loads a skill called history. It runs a search. It opens one old session and reads a few turns of it. That's all it does. -->
 
 ---
 
@@ -41,9 +40,13 @@ IF IT FAILS: say the four points yourself and go on. -->
 **Having the history is not the same as remembering it.**
 
 <!-- notes: [1:30 · running 4:30]
-TOPIC: remember or retrieve. The whole talk is this distinction.
-SAY: it did not remember. It had a tool that searches its own past, and it used it.
-NEXT: what is actually in that file. -->
+So. Did it remember that?
+No. When I started that session, nothing about that evening was in its context. Not one word. It found a file from three months ago, and it read it.
+Look at the table. The decision and the alternatives came from a session file. The date and the session id came from the same file. And none of it was in the context until the agent searched for it.
+
+**Having the history is not the same as remembering it.**
+
+That's the whole talk. For the next half hour I'll show you three things. What is really in that history. What the agent carries from one session to the next. And why I think we should question that second one much more than we usually do. -->
 
 ---
 
@@ -69,11 +72,19 @@ NEXT: what is actually in that file. -->
 - **`timestamp`, `cwd`**: provenance travels with the decision; that folder is gone, the record is not
 - **`thinking` is empty**; only the `signature` is on disk
 
-<!-- notes: [2:00 · running 6:30] LIVE · terminal (commands in demo/README.md)
-DO: ls ~/.claude/projects · ls -lh the bdd809e6 file · grep one line · the same line through jq.
-SAY: one file, one session. One line, unreadable. The same line, readable.
-BACK TO THE SLIDE: three fields. parentUuid: a tree, not a list. thinking: empty text plus a signature. cwd and timestamp on every record.
-Other fields only if asked. -->
+<!-- notes: [2:00 · running 6:30] LIVE · terminal
+So where did the answer come from? Let me show you the real files.
+Every Claude Code session is stored here, in your home directory. One folder per working directory. One file per session. This is the one from August. Seven hundred kilobytes for one evening.
+And this is one line of it. Nobody reads that. Let me take two records and make them readable.
+Here are the same two records, trimmed. Three things to notice.
+
+First, `parentUuid`. Every record points at its parent. So a session is a tree, not a list. And the reasoning and the answer are two separate records, six seconds apart.
+
+Second, provenance. Every record has a timestamp and the working directory. Look at the directory: `src/micbridge`. That was the prototype from that evening. I deleted that folder a month ago.
+**The folder is gone; the record of why is still here.**
+
+Third, the thinking block. The text is empty. What is stored is a signature, a blob I can't read. Remember that. We'll come back to it.
+-->
 
 ---
 
@@ -88,10 +99,13 @@ Other fields only if asked. -->
 - Tokens and cost **per turn**
 - Search across every indexed session
 
-<!-- notes: [2:00 · running 8:30] LIVE · Claudescope (scripts/demo.sh open)
-DO: scroll to the last turn, the recommendation.
-SAY: "A viewer I built to read these files. The file was readable all along, just not by humans."
-The slide is the fallback. -->
+<!-- notes: [2:00 · running 8:30] LIVE · Claudescope
+Nobody reads JSONL for fun. So let me show a viewer for these files. 
+It groups the records into turns. It puts every tool call next to its result. And it shows tokens and cost for each turn.
+And here is that evening. The agent tells me that macOS has no built-in way to connect one audio device to another. And then the recommendation we just heard.
+
+*This file was readable all along. Just not by humans, and not by the agent unless it goes looking.**
+-->
 
 ---
 
@@ -108,10 +122,20 @@ The slide is the fallback. -->
 In one real 6,682-record session, **about a third** was conversation.
 
 <!-- notes: [2:30 · running 11:00]
-TOPIC: what must be kept to rebuild a session.
-SAY FIRST: "You don't need to remember the formats, only three facts: the transcript is more complete than the chat, context is rebuilt, compaction removes context but not history."
-TWO SURPRISES: tool results arrive as user messages · the 40 KB the agent read sits in a sidecar file, not in the transcript.
-Subagent transcripts only if asked. -->
+Now let's look at the structure. You don't need to remember any format from this talk. Three facts are enough.
+One: the transcript is more complete than the chat. 
+Two: the context is rebuilt from it. 
+Three: compaction removes context, but it does not remove history.
+
+This slide shows the first fact. A session file holds much more than the conversation.
+Messages and tool calls are there, of course. But a tool result comes back as a *user* message that points at the call.
+
+Big outputs don't fit. They are written to a side file. The model only saw a two-kilobyte preview. So the transcript is not even complete on its own.
+
+The harness adds its own context too: the environment, reminders, hook output. And then there is housekeeping: titles, mode changes, file snapshots.
+
+I counted one real session. Almost seven thousand records. **Only about a third of it was conversation.**
+-->
 
 ---
 
@@ -134,10 +158,16 @@ Subagent transcripts only if asked. -->
 - The summary arrives as a **`user` message**; the model reads it, it did not write it for itself
 - The parent chain is cut; `logicalParentUuid` remembers where it was. **Everything before it is still on disk.**
 
-<!-- notes: [2:00 · running 13:00] LIVE · Claudescope (scripts/demo.sh open compaction)
-DO: the summary turn of a manual /compact (90,283 → 25,942 tokens, 39 s), then the last turn, answered from the summary.
-BACK TO THE SLIDE: these numbers are from a bigger, automatic compaction.
-SAY: "Nothing before this line is in the model's context anymore, except what the summary chose to keep. All of it is still in the file." -->
+<!-- notes: [2:00 · running 13:00] LIVE · Claudescope
+This shows the second and third facts together. When the context fills up, the harness compacts it. Or you ask for it.
+A few weeks ago I asked Claude Code to check my talk notes against these slides. Then I typed `/compact`. Ninety thousand tokens went in. Twenty-six thousand came out. It took forty seconds.
+I find two details interesting here.
+The summary arrives as a *user* message. The model did not write a note to itself. It gets a summary from someone else, and reads it like a briefing.
+And the parent chain is cut, on purpose. There is only a pointer back to where it was.
+**Nothing before this line is in the model's context anymore, except what the summary kept. All of it is still in the file.** 
+
+The automatic compactions get much bigger. The one on the slide: a million tokens in, seventeen thousand out, in under three minutes.
+-->
 
 ---
 
@@ -152,9 +182,12 @@ SAY: "Nothing before this line is in the model's context anymore, except what th
 *Documented: "the last compaction's summary, the messages that compaction left unsummarized, and every message since." Simplified diagram.*
 
 <!-- notes: [1:30 · running 14:30]
-TOPIC: the bridge to memory.
-SAY: the same records feed "what the model sees now" and "what can be searched later". Memory enters on a separate path. The rest of the talk is about what belongs on it.
-IF ASKED whether attachments are replayed on resume: "not documented, and I would not rely on it". -->
+Here is the same thing as a picture. To continue a session, the harness takes the file and removes the housekeeping. It cuts at the last compaction and turns the rest into messages. Claude Code documents exactly that: the last summary, the messages it left unsummarised, and everything since.
+Now look at the second arrow. Instructions and memory come in on a *separate* path, with their own rules.
+**What the model sees is the intersection, never the whole file.**
+
+The rest of this talk is about that second path. 
+-->
 
 ---
 
@@ -168,14 +201,24 @@ IF ASKED whether attachments are replayed on resume: "not documented, and I woul
 | **What reasoning state remains?** | Signed opaque state, empty `thinking` | Encrypted opaque state, `encrypted_content` | Plaintext `thinking`, optional `thinkingSignature` |
 | **How is earlier context replaced?** | `compact_boundary` + summary message | `compacted` with `replacement_history` | `compaction` entry: `summary`, `firstKeptEntryId` |
 
-<!-- notes: [3:30 · running 18:00] LIVE · Pi window (scripts/demo.sh pi), then Claudescope (scripts/demo.sh open agents)
-DO: paste question 2 into Pi: "check our session history with claudescope: why is kitty remote control socket-only in my config and not just yes? what else did we look at back then, and when was that?"
-WHILE IT RUNS: Claudescope, one project, the same five prompts in Claude Code, Codex and Pi. Say that it is staged. Open the Pi session, scroll to "Context compacted".
-DO NOT open the Codex session.
-EXPECT IN PI: a review tool needed a kitty overlay, which needs remote control over a socket · socket-only gives that and still rejects escape codes · 11 August.
-SAY: "That decision was made in Claude Code. Pi just read the record."
-BACK TO THE SLIDE: Codex: a turn is spread over several items, reasoning is an encrypted blob. Pi: threaded records, thinking text plus signature on disk, a compaction entry that names the first kept record. No format tour.
-IF BEHIND: skip the Pi question, show Claudescope only. -->
+<!-- notes: [3:30 · running 18:00] LIVE · Pi window, then Claudescope 
+
+Before that, a quick look at other agents. I don't want you to think only one vendor does this.
+DO: "check our session history with claudescope: why is kitty remote control socket-only in my config and not just yes? what else did we look at back then, and when was that?"
+
+While it searches: here is one small project, and three agents. Last week the same five prompts went to Claude Code, to Codex and to Pi. Build a tiny tool, check one thing, compact, answer one question from the summary.
+I should say: this one is staged, and I did not even type the prompts. I asked Claude to pretend to be me. It copied my typos. 
+Same task, three different files. Claude Code links records into a tree. Codex writes typed events, so one turn is spread over several of them. Pi threads messages by id.
+All three compacted. All three answered the last question from the summary. And in all three, the earlier records are still in the file.
+
+That decision was made in Claude Code. Pi just read the record.
+
+*Back to the deck.*
+
+One more row on this slide: reasoning. Claude Code keeps a signed blob. Codex keeps an encrypted one. Pi keeps whatever text the provider returns, next to the provider's signature.
+Different shapes, same idea. **The record outlives the context.**
+-->
+
 
 ---
 
@@ -193,10 +236,14 @@ Four things that are not the same:
 - **Encryption is not sanitisation. Strip opaque blocks before sharing a transcript.**
 
 <!-- notes: [2:00 · running 20:00]
-Two minutes, no more.
-SAY: the paper is a pointer. They fed the encrypted blocks back into a weaker model from the same provider and read the reasoning out. Anthropic, OpenAI and Google.
-"Almost never 3": Claude Code rarely keeps thinking text; the signature is always there.
-NEXT: straight to memory. -->
+Back to that empty thinking field, as promised.
+
+There are four different things here, and people mix them up. The final answer. A visible summary of the reasoning. The full reasoning. And a blob that goes back to the harness, so the next turn can continue.
+
+On disk, with Claude Code and Codex, you almost always get the fourth one.
+
+It is tempting to think: it's encrypted, so it's safe to share. A paper from this summer took encrypted reasoning blocks from session logs that people had published, and decoded them. They found hundreds of pieces of personal data, and almost two hundred credentials.
+-->
 
 ---
 
@@ -212,8 +259,17 @@ NEXT: straight to memory. -->
 The demo answer came from the **third row**. Most "give the agent memory" work targets the **fourth**.
 
 <!-- notes: [2:00 · running 22:00]
-TOPIC: two columns, next turn and new session.
-SAY: the stored transcript is the only row that is complete, and the only row that needs an action to reach. -->
+Now the second half: memory.
+
+Four kinds of state, and two questions. Does it reach the next turn? Does it reach a new session?
+
+The current context: next turn yes, new session no. 
+The compacted summary: only if you resume. 
+The stored transcript is the only complete one. It is also the only one you have to go and *get*. 
+Instructions and memory: usually loaded for you, according to their scope rules.
+
+**The demo answer came from the third row. Most "give your agent memory" work targets the fourth.**
+-->
 
 ---
 
@@ -242,11 +298,16 @@ metadata:
 
 **`originSessionId` leads back to the session. Whether anything reads it is another matter.**
 
-<!-- notes: [2:00 · running 24:00] LIVE · Claudescope (scripts/demo.sh open memory)
-DO: project amsterdam-ai-native-talk, open stage-demo-isolation.
-SAY: Claude Code wrote this on 29 October while we built this deck. Point at originSessionId. "I won't open that session, it's full of my day job. Provenance points somewhere, but not always somewhere you can show."
-It carries an expiry, 25 November: that is rule four on slide 15.
-Codex notes: scope, applies_to, rollout_path. Pi: no memory store. -->
+<!-- notes: [2:00 · running 24:00] LIVE · Claudescope
+Here is what that fourth row looks like on disk. Your global instruction file. Your project instruction file.
+And a folder of facts that the agent writes for itself. It has an index that is loaded at the start of every session.
+
+Here is a real one. Claude Code wrote it while I was building this deck. It says: until the talk, run live demos only through the isolated setup. It has a name, a one-line description, and this field, `originSessionId`. That is a pointer back to the session that wrote it.
+
+That is provenance, and it is good. Provenance points somewhere, but you can't always show what's there.
+
+Notice the date in it, too. This note expires after tonight. Remember that. It is one of the rules we'll look at in a minute.
+-->
 
 ---
 
@@ -262,9 +323,17 @@ Codex notes: scope, applies_to, rollout_path. Pi: no memory store. -->
 > A transcript has more knowledge. A memory file has more influence.
 
 <!-- notes: [1:30 · running 25:30]
-The key sentence of the talk.
-SAY: a million tokens nobody rereads, against a few hundred tokens everybody rereads.
-IF ASKED: Claude Code auto-memory is on by default; the first 200 lines or 25 KB of MEMORY.md load at every session start. Codex memories are off by default. -->
+Let's compare the two.
+
+The transcript: a million tokens, and nobody reads it unless they search. 
+A memory fact: a few hundred tokens, and its one-line summary is in front of the agent before you have typed anything.
+
+The transcript is what happened. The memory is somebody's *judgement* about what happened.
+
+So a wrong transcript gives you one bad answer, once. A wrong memory gives you the same bias in every session it is loaded into.
+
+**A transcript has more knowledge. A memory file has more influence.**
+-->
 
 ---
 
@@ -285,9 +354,18 @@ IF ASKED: Claude Code auto-memory is on by default; the first 200 lines or 25 KB
 *The observation was true. The scope was lost.*
 
 <!-- notes: [3:00 · running 28:30]
-TOPIC: nobody attacked anything. Walk the five steps.
-END ON: "The observation was true. The scope was lost."
-MORE EXAMPLES IF ASKED: "The API is unavailable, use a mock" · "Disable this validation in development" · "Use this absolute path". Each was correct once. -->
+Here is how that goes wrong. And nobody has to attack anything.
+
+One afternoon, on one branch, on one machine, an integration test fails. A local service is not running. The agent finds a reasonable workaround: on this branch, while that service is down, skip those tests.
+
+That was true. On that afternoon it was the right thing to do.
+
+Then the agent saves a memory. And the memory says: skip those tests, they are flaky.
+
+Look at what got lost between the two sentences. The branch. The service. The word "while".
+
+Time passes. The branch is merged. The service comes back. The machine gets reinstalled. The note stays. And every session that loads it starts by believing that those tests don't matter.
+-->
 
 ---
 
@@ -303,8 +381,20 @@ MORE EXAMPLES IF ASKED: "The API is unavailable, use a mock" · "Disable this va
 > The more automatically information enters context, the stronger its evidence and scope must be.
 
 <!-- notes: [2:00 · running 30:30]
-SAY: the blockquote is the rule. Everything above it follows from it.
-Rule four, the expiry: the memory file you just saw had one. -->
+So what do you do about it?
+
+Treat agent-written memory like code, because it runs in every session. Review it.
+
+Say what kind of thing each note is: an instruction, a decision, an observation, or a guess. Today the loader treats them all the same.
+
+Keep the provenance: the date, the session, the branch.
+Give workarounds an expiry, like the note you just saw.
+And replace stale facts. Don't just keep adding new ones.
+
+Instructions make the most sense to load every time. Decisions and observations usually need a scope. Or they should be searched for, not loaded.
+
+**The more automatically information enters context, the stronger its evidence and scope must be.**
+-->
 
 ---
 
@@ -325,9 +415,7 @@ SAY: back at the opening. It did not memorise my decision, it retrieved it.
 WAYS: resume · grep · index · MCP or a skill · teach the agent when to look back. "In the first demo that was a skill. In the second one, it was me."
 CHART: three questions, the same three bars each time. Time: 62 s against 27 and 30. Cost: 24 cents against 13 and 20, so 45% cheaper through MCP, 15% through the skill. Correct: 93% against 95 and 95, inside the noise.
 SAY: "The index makes retrieval faster and cheaper. I can't show it makes it more accurate."
-DISCLOSE: "I wrote both the benchmark and the indexer."
-MODEL: Claude Sonnet 5 as the agent, Claude Opus 4.8 as the blind judge.
-IF ASKED: 3 machines, 87 questions, 229 runs per approach. Accuracy +2.3 points, interval −1.1 to +6.3. An earlier one-machine pilot showed +9. -->
+-->
 
 ---
 
@@ -363,4 +451,4 @@ Read the blockquote. Then the next slide. -->
 
 <!-- notes: [stays up during questions]
 SAY: "Thank you. The code takes you to the slides, the sources and every link. Questions?"
-Leave this slide on for the whole Q&A. -->
+-->
